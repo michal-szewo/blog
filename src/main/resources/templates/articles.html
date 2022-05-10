@@ -27,7 +27,7 @@
     
     <div id="posts" >
       
-            <h2 th:if="${articles == null}" class="m-3 p-3r">Brak postów do wyświetlenia</h2>
+            <h2 th:if="${articles == null}" class="m-3 p-3r">Brak artykułów do wyświetlenia</h2>
       		
           
           <div th:unless="${articles == null}">
@@ -44,7 +44,7 @@
                 <h2 class="blog-post-title card-title" th:text="${article.title}">Title</h2>
                 <p class="blog-post-meta text-muted"><span th:text="${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')}">publishedAt</span> By <span th:text="${article.author.username}">Author</span></p>
         
-                <p class="card-text" th:text="${article.body}">Body</p>
+                <p class="card-text" th:utext="${article.body}">Body</p>
               </article>
          </div>
     
