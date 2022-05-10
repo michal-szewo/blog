@@ -27,10 +27,10 @@
     
     <div id="posts" >
       
-            <h2 th:if="${articles == null}" class="m-3 p-3r">Brak postów do wyświetlenia</h2>
+            <h2 th:if="${articles == null || articles.size == 0}" class="m-3 p-3r">Brak artykułów do wyświetlenia</h2>
       		
           
-          <div th:unless="${articles == null}">
+          <div th:unless="${articles == null || articles.size == 0}">
           
             <article th:each="article : ${articles}" class="border m-3 p-3 shadow-sm rounded card position-relative">
                 
