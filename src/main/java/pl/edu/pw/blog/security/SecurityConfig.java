@@ -52,15 +52,16 @@ protected void configure(HttpSecurity http) throws Exception {
         .logoutSuccessUrl("/")
         .invalidateHttpSession(true)
         .deleteCookies("JSESSIONID")
+    .and()  
+        .headers()
+        .frameOptions()
+         .sameOrigin()
  
     .and()
-      .csrf()
-        .ignoringAntMatchers("/h2-console/**")
+      .csrf().disable()
+   // .ignoringAntMatchers("/h2-console/**")
 
-    .and()  
-      .headers()
-        .frameOptions()
-          .sameOrigin()
+    
    
     ;
 }
