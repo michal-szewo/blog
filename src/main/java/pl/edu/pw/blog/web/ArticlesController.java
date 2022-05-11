@@ -77,7 +77,10 @@ public class ArticlesController {
 	public String addArticle(@ModelAttribute("newArticle") @Valid Article article, Errors errors,
 			@AuthenticationPrincipal User user, Model model) {
 
-		log.info(user.getUsername());
+		if (errors.hasErrors()) {
+			  
+			  return "redirect:/";
+		  }
 
 		article.setAuthor(user);
 		articleRepo.save(article);
@@ -93,16 +96,13 @@ public class ArticlesController {
 	
 	@GetMapping(value = "/articles/edit/{id}")
 	public String editArticle(@PathVariable Long id, Model model, @AuthenticationPrincipal User user) {
-		Optional<Article> article = articleRepo.findById(id);
-		if (article.isPresent()) {
-			Article art = article.get();
-		model.addAttribute("article", art);
+		Article article = articleRepo.findById(id)
+				.orElseThrow(()-> new IllegalArgumentException("Brak artykułu o id: " + id));
+		
+		model.addAttribute("article", article);
 		model.addAttribute("user", user);
 		return "edit";
-		} else {
-			throw new ResponseStatusException(
-			           HttpStatus.NOT_FOUND);
-		}
+		
 		
 		
 	}
