@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
@@ -32,12 +33,14 @@ public class Article implements Serializable{
 	private Long id;
 	
 	@NonNull
+	@NotBlank(message="Podanie tytułu jest obowiązkowe")
 	private String title;
 	
 	
 	private Date publishedAt;
 	
 	@NonNull
+	@NotBlank(message="Podanie treści jest obowiązkowe")
 	@Column(length=65000)
 	private String body;
 	
