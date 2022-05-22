@@ -25,7 +25,11 @@
     <main>
     
     <div id="posts" >
-      
+		<div th:if="${errors}" class="m-3 p-3r">
+		    <ul>
+		        <li class="text-danger" th:each="err : ${errors}" th:text="${err.getDefaultMessage()}" />
+		    </ul>
+		</div>
             <h2 th:if="${articles == null || articles.size ==0}" class="m-3 p-3r">Brak artykułów do wyświetlenia</h2>
       		
           
@@ -61,7 +65,7 @@
 	        
 		         <div class="mb-3 mt-3">
 		          <label for="postTitle" class="form-label">Temat posta:</label>
-		          <input type="text" th:field="*{title}" class="form-control" required>
+		          <input type="text" th:field="*{title}" class="form-control">
 		         </div>
 		         <div class="mb-3">
 		          <label for="postBody" class="form-label">Treść posta:</label>

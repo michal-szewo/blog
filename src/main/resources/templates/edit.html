@@ -15,7 +15,7 @@
       <div class="col-lg-2 mx-2"><i class="material-icons" style="font-size:68px;color:white">import_contacts</i></div>
       <div class="col-lg-10 d-flex justify-content-start mx-2"><h1>Blog - edycja artykułu <span th:text="${article.id}"></span></h1></div>
       <nav class="position-absolute bottom-0 end-0 d-flex align-items-center">
-      <a class="btn text-white d-flex align-items-center" onclick="event.preventDefault();var myCollapse = document.getElementById('collapseForm');var bsCollapse = new bootstrap.Collapse(myCollapse, {toggle: true})" ><i class="material-icons" style="color:white" >add</i> Utwórz artykuł</a> | 
+      <a th:href="@{/}" class="btn text-white d-flex align-items-center" >Powrót do strony głównej</a> | 
       <!--<a class="btn text-white d-flex align-items-center" th:href="@{/logout}"><i class="material-icons" style="color:white">person</i> Wyloguj</a>-->
       <a class="btn text-white d-flex align-items-center" href="javascript: document.logoutForm.submit()" role="menuitem">Wyloguj</a>
            <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
@@ -23,9 +23,23 @@
       </nav>
     </header>
     <main>
-    
-    <div id="posts" >
-      
+    	
+    <div id="post" >
+      	  <form th:action="@{'/modifyArticle/{id}'(id=${article.id})}" th:object="${article}" class="col-lg-6 mx-auto p-3" method="post" id="addForm">
+	        	<div th:if="${message}" th:text="${message}" class="mb-3 mt-3 text-danger">Message</div>
+		         <div class="mb-3 mt-3">
+		          <label for="postTitle" class="form-label">Temat artykułu:</label>
+		          <input type="text" th:field="*{title}" class="form-control"><span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger">Błąd</span>
+		         </div>
+		         <div class="mb-3">
+		          <label for="postBody" class="form-label">Treść posta:</label>
+		          <textarea th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea><span th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="text-danger">Błąd</span>
+		         </div>
+		    	 <div class="d-flex">
+		          <button type="submit" class="btn btn-md btn-primary d-flex mt-3 align-items-center"><i class="material-icons">mode_edit</i>&nbsp;Zapisz zmiany</button><a th:href="@{/}" class="btn btn-md btn-primary d-flex mt-3 ms-3 align-items-center">Powrót do strony głównej</a>
+		         </div>
+	        
+	        </form>
             
          </div>
   
