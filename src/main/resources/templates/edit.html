@@ -24,22 +24,39 @@
     </header>
     <main>
     	
-    <div id="post" >
-      	  <form th:action="@{'/modifyArticle/{id}'(id=${article.id})}" th:object="${article}" class="col-lg-6 mx-auto p-3" method="post" id="addForm">
-	        	<div th:if="${message}" th:text="${message}" class="mb-3 mt-3 text-danger">Message</div>
+    <div id="post"><div th:if="${message}" th:text="${message}" class="mb-3 mt-3 mx-3 text-danger">Message</div>
+      	  <form name="editForm" th:action="@{'/modifyArticle/{id}'(id=${article.id})}" th:object="${article}" class="row" method="post" id="addForm">
+	        <div class="col-lg-6 mx-3">	
+	        	
 		         <div class="mb-3 mt-3">
 		          <label for="postTitle" class="form-label">Temat artykułu:</label>
-		          <input type="text" th:field="*{title}" class="form-control"><span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger">Błąd</span>
+		          <input id="postTitle" type="text" th:field="*{title}" class="form-control" onkeyup="document.getElementById('editBtn').disabled = false"><span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger">Błąd</span>
 		         </div>
 		         <div class="mb-3">
 		          <label for="postBody" class="form-label">Treść posta:</label>
 		          <textarea th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea><span th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="text-danger">Błąd</span>
 		         </div>
 		    	 <div class="d-flex">
-		          <button type="submit" class="btn btn-md btn-primary d-flex mt-3 align-items-center"><i class="material-icons">mode_edit</i>&nbsp;Zapisz zmiany</button><a th:href="@{/}" class="btn btn-md btn-primary d-flex mt-3 ms-3 align-items-center">Powrót do strony głównej</a>
+		          <button type="submit" id="editBtn" class="btn btn-md btn-primary d-flex mt-3 align-items-center" disabled><i class="material-icons">mode_edit</i>&nbsp;Zapisz zmiany</button><a th:href="@{/}" class="btn btn-md btn-primary d-flex mt-3 ms-3 align-items-center">Powrót do strony głównej</a>
 		         </div>
-	        
-	        </form>
+	        </div>
+	         <div class="col-lg-4 mx-3">
+	        	<div class="mb-3 mt-3">
+		          <label for="postAuthor" class="form-label">Autor artykułu:</label>
+		          <input id="postAuthor" type="text" th:field="*{author.username}" class="form-control" disabled>
+		         </div>
+		         <div class="mb-3 mt-3">
+		          <label for="CreationDate" class="form-label">Data publikacji:</label>
+		          <input id="CreationDate" type="text" th:field="*{publishedAt}" class="form-control" disabled>
+		         </div>
+		         <div class="mb-3 mt-3">
+		          <label for="postAuthor" class="form-label">Data modyfikacji:</label>
+		          <input name="postAuthor" type="text" th:field="*{modifiedAt}" class="form-control" disabled>
+		         </div>
+		          
+	        </div>
+	       </form>
+	       
             
          </div>
   
@@ -50,7 +67,13 @@
         selector: 'textarea#body',
         plugins: 'link image lists code',
         toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image code| forecolor language',
-        language: 'pl'
+        language: 'pl',
+        setup: function(editor) {
+    	editor.on('keyup', function(e) {
+      	    $('#editBtn').attr('disabled', false);
+            
+    });
+  }
        
   		
       });

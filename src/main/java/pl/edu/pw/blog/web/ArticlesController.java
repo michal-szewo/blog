@@ -95,10 +95,7 @@ public class ArticlesController {
 
 		if (errors.hasErrors()) {
 			 redirectAttributes.addFlashAttribute("errors",errors.getAllErrors()); 
-			 List<ObjectError> list = errors.getAllErrors();
-			 for (ObjectError i : list) {
-				 
-			 }
+			 
 			return "redirect:/";
 		  }
 

@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
 
@@ -36,7 +38,7 @@ public class Article implements Serializable{
 	@NotBlank(message="Podanie tytułu jest obowiązkowe")
 	private String title;
 	
-	
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date publishedAt;
 	
 	@NonNull
@@ -49,7 +51,7 @@ public class Article implements Serializable{
 	@JoinColumn(name="author_id", nullable=false)
 	private User author;
 	
-	
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date modifiedAt;
 	
 	@PrePersist
