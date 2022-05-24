@@ -39,11 +39,13 @@
             <label for="password" class="form-label">Hasło:</label>
             <input type="password" class="form-control" placeholder="Wpisz hasło" name="password" required>
             </div>
-            
-            <button type="submit" class="btn btn-primary">Zaloguj</button>
+            <div class="d-flex align-items-center justify-content-start">
+            <button type="submit" class="btn btn-primary">Zaloguj</button><a class="ms-3" th:href="@{/register}">Nie masz konta? Zarejestruj się</a>
             </div>
+            </div>
+            
           </form>
-          <a class="m-3 p-3" th:href="@{/register}">Nie masz konta? Zarejestruj się</a>
+          
           </div>
           
      </div>

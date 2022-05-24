@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +35,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.edu.pw.blog.Article;
@@ -63,26 +69,37 @@ public class ArticlesController {
 	public Article article() {
 		return new Article();
 	}
+	@ModelAttribute
+	public void readUser(Model model, @AuthenticationPrincipal User user) {
+		model.addAttribute("user", user);
+	}
+	
 
 	@GetMapping("/")
-	public String showArticles(WebRequest request, Model model, @AuthenticationPrincipal User user) {
+	public String showArticles(Model model
+			//,@AuthenticationPrincipal User user
+			) {
 
 		model.addAttribute("articles", articleRepo.findAllByOrderByPublishedAtDesc());
-		model.addAttribute("user", user);
+		//model.addAttribute("user", user);
 
 		return "articles";
 	}
 
 	@PostMapping("/addArticle")
-	public String addArticle(@ModelAttribute("newArticle") @Valid Article article, Errors errors,
-			@AuthenticationPrincipal User user, Model model) {
+	public String addArticle(@ModelAttribute("newArticle") @Valid Article article, BindingResult errors,
+			//@AuthenticationPrincipal User user,
+			Model model,
+			RedirectAttributes redirectAttributes
+			) {
 
 		if (errors.hasErrors()) {
-			  
-			  return "redirect:/";
+			 redirectAttributes.addFlashAttribute("errors",errors.getAllErrors()); 
+			 
+			return "redirect:/";
 		  }
 
-		article.setAuthor(user);
+		article.setAuthor((User) model.getAttribute("user"));
 		articleRepo.save(article);
 
 		return "redirect:/";
@@ -95,16 +112,34 @@ public class ArticlesController {
 	}
 	
 	@GetMapping(value = "/articles/edit/{id}")
-	public String editArticle(@PathVariable Long id, Model model, @AuthenticationPrincipal User user) {
+	public String editArticle(@PathVariable Long id, Model model
+			//,@AuthenticationPrincipal User user
+			) {
 		Article article = articleRepo.findById(id)
 				.orElseThrow(()-> new IllegalArgumentException("Brak artykułu o id: " + id));
 		
 		model.addAttribute("article", article);
-		model.addAttribute("user", user);
+		//model.addAttribute("user", user);
 		return "edit";
 		
+	}
+	
+	@PostMapping("/modifyArticle/{id}")
+	public String modifyArticle(@ModelAttribute("article") @Valid Article article, BindingResult errors, @PathVariable Long id, RedirectAttributes redirectAttributes) {
 		
 		
+		if (errors.hasErrors()) {
+
+			return "edit";
+		  }
+
+			Article modifiedArticle = articleRepo.findById(id).get();
+			modifiedArticle.setTitle(article.getTitle());
+			modifiedArticle.setBody(article.getBody());
+			articleRepo.save(modifiedArticle);
+			redirectAttributes.addFlashAttribute("message","Artykuł zapisano");
+			return "redirect:/articles/edit/"+modifiedArticle.getId();
+			
 	}
 
 	/*
