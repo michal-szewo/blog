@@ -94,8 +94,9 @@ public class ArticlesController {
 			) {
 
 		if (errors.hasErrors()) {
+			 redirectAttributes.addFlashAttribute("errorMessage","Nie udało się dodać artykułu");
 			 redirectAttributes.addFlashAttribute("errors",errors.getAllErrors()); 
-			 
+			 redirectAttributes.addFlashAttribute("newArticle",article);
 			return "redirect:/";
 		  }
 		
