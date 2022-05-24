@@ -24,7 +24,7 @@
     </header>
     <main>
     	
-    <div id="post"><div th:if="${message}" th:text="${message}" class="mb-3 mt-3 mx-3 text-danger">Message</div>
+    <div id="post"><div th:if="${message}" th:text="${message}" class="mb-3 mt-3 mx-3 text-success">Message</div>
       	  <form name="editForm" th:action="@{'/modifyArticle/{id}'(id=${article.id})}" th:object="${article}" class="row" method="post" id="addForm">
 	        <div class="col-lg-6 mx-3">	
 	        	

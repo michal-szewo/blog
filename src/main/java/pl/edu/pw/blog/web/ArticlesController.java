@@ -98,16 +98,17 @@ public class ArticlesController {
 			 
 			return "redirect:/";
 		  }
-
+		
 		article.setAuthor((User) model.getAttribute("user"));
 		articleRepo.save(article);
-
+		redirectAttributes.addFlashAttribute("message","Dodano artykuł o id: "+ article.getId());
 		return "redirect:/";
 	}
 
 	@PostMapping(value = "/articles/delete/{id}")
-	public String deleteArticle(@PathVariable Long id) {
+	public String deleteArticle(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 		articleRepo.deleteById(id);
+		redirectAttributes.addFlashAttribute("message","Usunięto artykuł o id: " + id);
 		return "redirect:/";
 	}
 	

@@ -25,6 +25,7 @@
     <main>
     
     <div id="posts" >
+    	<div th:if="${message}" class="m-3 p-3r text-success" th:text="${message}">Message</div>
 		<div th:if="${errors}" class="m-3 p-3r">
 		    <ul>
 		        <li class="text-danger" th:each="err : ${errors}" th:text="${err.getDefaultMessage()}" />
