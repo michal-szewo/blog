@@ -8,10 +8,10 @@
   	
 </head>
 
-<body class="container m-auto rounded">
+<body class="container m-auto p-3 rounded">
    
-     <header class="py-5 mx-3 bg-dark bg-gradient rounded text-white text-center d-flex align-items-center position-relative">
-       <div class="position-absolute top-0 end-0 p-2">Witaj, <span th:text="${user.username}">User</span></div>
+     <header class="py-5 bg-dark bg-gradient rounded text-white text-center d-flex align-items-center position-relative">
+       <div class="position-absolute top-0 end-0 p-2">Zalogowany: <span th:text="${user.username}">User</span></div>
       <div class="col-lg-2 mx-2"><i class="material-icons" style="font-size:68px;color:white">import_contacts</i></div>
       <div class="col-lg-10 d-flex justify-content-start mx-2"><h1>Blog - edycja artykułu <span th:text="${article.id}"></span></h1></div>
       <nav class="position-absolute bottom-0 end-0 d-flex align-items-center">
@@ -24,9 +24,9 @@
     </header>
     <main>
     	
-    <div id="post"><div th:if="${message}" th:text="${message}" class="mb-3 mt-3 mx-3 text-danger">Message</div>
+    <div id="post"><div th:if="${message}" th:text="${message}" class="mb-3 mt-3 mx-3 text-success">Message</div>
       	  <form name="editForm" th:action="@{'/modifyArticle/{id}'(id=${article.id})}" th:object="${article}" class="row" method="post" id="addForm">
-	        <div class="col-lg-6 mx-3">	
+	        <div class="col-lg-8">	
 	        	
 		         <div class="mb-3 mt-3">
 		          <label for="postTitle" class="form-label">Temat artykułu:</label>
@@ -37,10 +37,13 @@
 		          <textarea th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea><span th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="text-danger">Błąd</span>
 		         </div>
 		    	 <div class="d-flex">
-		          <button type="submit" id="editBtn" class="btn btn-md btn-primary d-flex mt-3 align-items-center" disabled><i class="material-icons">mode_edit</i>&nbsp;Zapisz zmiany</button><a th:href="@{/}" class="btn btn-md btn-primary d-flex mt-3 ms-3 align-items-center">Powrót do strony głównej</a>
+		          <button name="modify" value="modify" type="submit" id="editBtn" class="btn btn-md btn-success d-flex mt-3 align-items-center" disabled><i class="material-icons">mode_edit</i>&nbsp;Zapisz zmiany</button>
+		          <button name="delete" value="delete" type="submit" id="deleteBtn" class="btn btn-md btn-danger d-flex mt-3 ms-3 align-items-center"><i class="material-icons">delete_forever</i>&nbsp;Usuń artykuł</button>
+		          <a th:href="@{/}" class="btn btn-md btn-primary d-flex mt-3 ms-3 align-items-center">Powrót do strony głównej</a>
+		         
 		         </div>
 	        </div>
-	         <div class="col-lg-4 mx-3">
+	         <div class="col-lg-4 ">
 	        	<div class="mb-3 mt-3">
 		          <label for="postAuthor" class="form-label">Autor artykułu:</label>
 		          <input id="postAuthor" type="text" th:field="*{author.username}" class="form-control" disabled>

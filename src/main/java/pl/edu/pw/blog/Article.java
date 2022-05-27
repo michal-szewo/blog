@@ -18,7 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
-
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -39,6 +39,7 @@ public class Article implements Serializable{
 	private String title;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat (pattern="yyyy-MM-dd hh:mm:ss")
 	private Date publishedAt;
 	
 	@NonNull
@@ -52,6 +53,7 @@ public class Article implements Serializable{
 	private User author;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat (pattern="yyyy-MM-dd hh:mm:ss")
 	private Date modifiedAt;
 	
 	@PrePersist

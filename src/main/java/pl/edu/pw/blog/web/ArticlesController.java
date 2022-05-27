@@ -94,20 +94,22 @@ public class ArticlesController {
 			) {
 
 		if (errors.hasErrors()) {
+			 redirectAttributes.addFlashAttribute("errorMessage","Nie udało się dodać artykułu");
 			 redirectAttributes.addFlashAttribute("errors",errors.getAllErrors()); 
-			 
+			 redirectAttributes.addFlashAttribute("newArticle",article);
 			return "redirect:/";
 		  }
-
+		
 		article.setAuthor((User) model.getAttribute("user"));
 		articleRepo.save(article);
-
+		redirectAttributes.addFlashAttribute("message","Dodano artykuł o id: "+ article.getId());
 		return "redirect:/";
 	}
 
 	@PostMapping(value = "/articles/delete/{id}")
-	public String deleteArticle(@PathVariable Long id) {
+	public String deleteArticle(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 		articleRepo.deleteById(id);
+		redirectAttributes.addFlashAttribute("message","Usunięto artykuł o id: " + id);
 		return "redirect:/";
 	}
 	
@@ -124,7 +126,7 @@ public class ArticlesController {
 		
 	}
 	
-	@PostMapping("/modifyArticle/{id}")
+	@RequestMapping(value="/modifyArticle/{id}", method = RequestMethod.POST, params = "modify")
 	public String modifyArticle(@ModelAttribute("article") @Valid Article article, BindingResult errors, @PathVariable Long id, RedirectAttributes redirectAttributes) {
 		
 		
@@ -140,7 +142,15 @@ public class ArticlesController {
 			redirectAttributes.addFlashAttribute("message","Artykuł zapisano");
 			return "redirect:/articles/edit/"+modifiedArticle.getId();
 			
+		
+		
 	}
+	
+	@RequestMapping(value="/modifyArticle/{id}", method = RequestMethod.POST, params = "delete")
+	public String modifyDeleteArticle(@PathVariable Long id) {
+		return "forward:/articles/delete/"+id;
+	}
+	
 
 	/*
 	 * @RequestMapping(value="/uploadImage", method = RequestMethod.POST)
