@@ -37,7 +37,7 @@
           
           <div th:unless="${articles == null || articles.size ==0}">
           
-            <article th:each="article : ${articles}" class="border my-3 p-3 shadow-sm rounded card position-relative">
+            <article th:each="article : ${articles}" class="border my-4 shadow-sm rounded card position-relative">
 	            <div th:if="${article.author.id == user.id}" class="btn btn-white position-absolute top-0 end-0 d-flex align-items-center m-0 p-0">
 	            <a th:href="@{'/articles/edit/{id}'(id=${article.id})}" class="btn btn-white d-flex align-items-center"><i class="material-icons">mode_edit</i> Edytuj
 		    			</a>
@@ -48,12 +48,13 @@
 					</form>
 	            </div>
                 
-                <h2 class="blog-post-title card-title" th:text="${article.title}">Title</h2>
-                <p class="blog-post-meta text-muted"><span th:text="${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')} + ' By ' + ${article.author.username}"></span></p>
-        
-                <p class="card-text" th:utext="${article.body}">Body</p>
-                <div class="card-footer">Footer - likes</div>
+                <h2 class="blog-post-title card-title p-3" th:text="${article.title}">Title</h2>
+                <p class="blog-post-meta text-muted ps-3"><span th:text="${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')} + ' By ' + ${article.author.username}"></span></p>
+        		
+                <div class="card-text p-3" th:utext="${article.body}">Body</div>
+                <div class="card-footer d-flex justify-content-end"><a class="btn btn-white d-flex align-items-center">Lubię to&nbsp;<i class="material-icons">thumb_up</i></a></div>
               </article>
+              
          </div>
     
         
