@@ -48,7 +48,7 @@
                   <input type="password" th:field="*{matchingPassword}" class="form-control" placeholder="Powtórz hasło" required><span th:if="${#fields.hasErrors('${form}')}" th:errors="${form}" class="text-danger">Błąd</span>
                   </div>
                   
-                  <button type="submit" class="btn btn-primary">Zarejestruj</button>
+                  <button type="submit" class="btn btn-primary">Zarejestruj</button> <a class="ms-3" th:href="@{/}">Ekran logowania</a>
                   
                   </div>
           </form> 
