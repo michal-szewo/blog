@@ -52,6 +52,7 @@
                 <p class="blog-post-meta text-muted"><span th:text="${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')} + ' By ' + ${article.author.username}"></span></p>
         
                 <p class="card-text" th:utext="${article.body}">Body</p>
+                <div class="card-footer">Footer - likes</div>
               </article>
          </div>
     
