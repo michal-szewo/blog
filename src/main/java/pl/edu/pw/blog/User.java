@@ -3,13 +3,18 @@ package pl.edu.pw.blog;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -46,10 +51,32 @@ public class User implements UserDetails{
 	@NonNull
 	private String fullname;
 	
-	/*
-	 * @OneToMany(mappedBy="author",fetch = FetchType.EAGER) private Set<Article>
-	 * articles;
-	 */
+	
+	
+	
+	@ManyToMany(mappedBy = "likers",fetch=FetchType.EAGER)
+	private Set<Article> likedArticles = new HashSet<>();
+	
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this ==o) return true;
+		if (o == null || getClass() !=o.getClass()) return false;
+		User other = (User) o;
+		if (!id.equals(other.getId())) return false;
+		if (!username.equals(other.getUsername())) return false;
+		
+		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = id.hashCode();
+		result = 31*result + username.hashCode();	
+		return result;
+	}
+	
+	
 	
 	  
 	  @Override
