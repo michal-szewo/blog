@@ -52,7 +52,17 @@
                 <p class="blog-post-meta text-muted ps-3"><span th:text="${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')} + ' By ' + ${article.author.username}"></span></p>
         		
                 <div class="card-text p-3" th:utext="${article.body}">Body</div>
-                <div class="card-footer d-flex justify-content-end"><a class="btn btn-white d-flex align-items-center">Lubię to&nbsp;<i class="material-icons">thumb_up</i></a></div>
+                <div class="card-footer d-flex justify-content-end">
+                <span th:text="${article.likeCount()}">Likes count</span>
+                
+                <!--<a class="btn btn-white d-flex align-items-center">Lubię to&nbsp;<i class="material-icons">thumb_up</i></a>-->
+                
+                <form th:action="@{'/articles/likes/{id}'(id=${article.id})}" th:method="post" class="btn btn-white d-flex align-items-center">
+		    			<button type="submit" class="btn btn-white d-flex align-items-center">
+		        								<i class="material-icons">thumb_up</i> Lubię to
+		    			</button>
+					</form>
+                </div>
               </article>
               
          </div>

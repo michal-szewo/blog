@@ -151,6 +151,15 @@ public class ArticlesController {
 		return "forward:/articles/delete/"+id;
 	}
 	
+	@PostMapping(value="/articles/likes/{id}")
+	public String toggleLike(Model model, @PathVariable Long id){
+		Article article = articleRepo.findById(id).get();
+		
+		article.addLike((User) model.getAttribute("user"));
+		articleRepo.save(article);
+		return "redirect:/";
+	}
+	
 
 	/*
 	 * @RequestMapping(value="/uploadImage", method = RequestMethod.POST)
