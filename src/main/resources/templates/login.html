@@ -20,17 +20,19 @@
       <div class="col-lg-10 d-flex justify-content-start mx-2"><h1>Blog - logowanie</h1></div>
       
     </header>
-    <main>
-    <div class="row">
+    <main class="container">
+    
           <div class="d-flex flex-column justify-content-center">
           
-          <form th:action="@{/login}" class="border my-3 p-3 shadow-sm rounded" method="post">
+          <form th:action="@{/login}" class="border my-3 p-3 shadow-sm rounded row" method="post">
+            <div class="col-12">
             <h2><i class="material-icons">input</i> Logowanie</h2>
                 
                     <p th:if="${param[error] != null }" class="text-danger">
                      	Logowanie nieudane. Sprawdź poprawność nazwy użytkownika i hasła.
                     </p>
-            <div class="w-50">      
+            </div>
+            <div class="col-lg-6 col-12">     
             <div class="mb-3 mt-3">
             <label for="username" class="form-label">Nazwa użytkownika:</label>
             <input type="text" class="form-control" placeholder="Wpisz nazwę" name="username" required>
@@ -48,7 +50,7 @@
           
           </div>
           
-     </div>
+     
        
     </main>
      <footer th:replace="fragments/general.html :: footer"></footer>

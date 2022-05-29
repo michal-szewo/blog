@@ -48,8 +48,11 @@
 					</form>
 	            </div>
                 
-                <h2 class="blog-post-title card-title p-3" th:text="${article.title}">Title</h2>
-                <p class="blog-post-meta text-muted ps-3"><span th:text="${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')} + ' By ' + ${article.author.username}"></span></p>
+                <h2 class="blog-post-title card-title px-3 pt-3 w-75" th:text="${article.title}">Title</h2>
+                <p class="blog-post-meta text-muted ps-3 fs-6">
+                	<span th:text="'Utworzony:' + ${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')}"></span><br>
+                	<span th:text="'Autor: ' + ${article.author.username}"></span>
+                </p>
         		
                 <div class="card-text p-3" th:utext="${article.body}">Body</div>
                 
@@ -58,7 +61,7 @@
                 <div class="dropdown">
                 	<button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" th:text="'Polubień: ' + ${article.likeCount()}">Likes count
                 	</button>
-					    <ul th:if="${article.likeCount() > 0}" class="dropdown-menu">
+					    <ul th:if="${article.likeCount() > 0}" class="dropdown-menu px-3">
 					      <li th:each="liker : ${article.likers}"><span th:text="${liker.username}"></span></li>
 						    
 					    </ul>

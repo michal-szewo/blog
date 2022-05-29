@@ -52,16 +52,11 @@ public class User implements UserDetails{
 	private String fullname;
 	
 	
-	/*
-	 * @ManyToMany(fetch=FetchType.LAZY, cascade = { CascadeType.ALL })
-	 * 
-	 * @JoinTable( name="LIKES", joinColumns = @JoinColumn( name="user_id"),
-	 * inverseJoinColumns = @JoinColumn( name="article_id", unique=false) ) private
-	 * Set<Article> likedArticles;
-	 */
 	
-	@ManyToMany(mappedBy = "likers")
+	
+	@ManyToMany(mappedBy = "likers",fetch=FetchType.EAGER)
 	private Set<Article> likedArticles = new HashSet<>();
+	
 	
 	@Override
 	public boolean equals(Object o) {

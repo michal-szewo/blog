@@ -56,10 +56,10 @@ public class Article implements Serializable{
 	private String body;
 	
 	
-	@ManyToMany(fetch=FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToMany(fetch=FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable( name="LIKES",
 	            joinColumns = @JoinColumn( name="article_id"),
-	            inverseJoinColumns = @JoinColumn( name="user_id")
+	            inverseJoinColumns = @JoinColumn( name="user_id",unique=false)
 	        )
     private Set<User> likers = new HashSet<>();
 	
