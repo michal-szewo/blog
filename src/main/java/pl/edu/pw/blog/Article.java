@@ -55,16 +55,6 @@ public class Article implements Serializable{
 	@Column(length=65000)
 	private String body;
 	
-	/*
-	 * @NonNull
-	 * 
-	 * @ElementCollection
-	 * 
-	 * @CollectionTable( name="LIKES", joinColumns = @JoinColumn(name="article_id"))
-	 * 
-	 * @Column(name = "user_id", nullable = false) private Set<Long> likes = new
-	 * HashSet<Long>();
-	 */ 
 	
 	@ManyToMany(fetch=FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable( name="LIKES",
@@ -97,6 +87,9 @@ public class Article implements Serializable{
 	
 	public void addLike(User u){
 	    getLikers().add(u);
+	}
+	public void removeLike(User u){
+	    getLikers().remove(u);
 	}
 	
 	public boolean isLiked() {

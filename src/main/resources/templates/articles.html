@@ -52,15 +52,35 @@
                 <p class="blog-post-meta text-muted ps-3"><span th:text="${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')} + ' By ' + ${article.author.username}"></span></p>
         		
                 <div class="card-text p-3" th:utext="${article.body}">Body</div>
-                <div class="card-footer d-flex justify-content-end">
-                <span th:text="${article.likeCount()}">Likes count</span>
                 
-                <!--<a class="btn btn-white d-flex align-items-center">Lubię to&nbsp;<i class="material-icons">thumb_up</i></a>-->
+                <div class="card-footer d-flex justify-content-end align-items-center">
+                
+                <div class="dropdown">
+                	<button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" th:text="'Polubień: ' + ${article.likeCount()}">Likes count
+                	</button>
+					    <ul th:if="${article.likeCount() > 0}" class="dropdown-menu">
+					      <li th:each="liker : ${article.likers}"><span th:text="${liker.username}"></span></li>
+						    
+					    </ul>
+                </div>
+                
                 
                 <form th:action="@{'/articles/likes/{id}'(id=${article.id})}" th:method="post" class="btn btn-white d-flex align-items-center">
-		    			<button type="submit" class="btn btn-white d-flex align-items-center">
-		        								<i class="material-icons">thumb_up</i> Lubię to
-		    			</button>
+		    			
+		    			
+		    			<input type="hidden" th:value="${article.isLikedByUser(user)}" th:attr="name='isLiked'"/>
+		    			
+		    				<button th:if="${!article.isLikedByUser(user)}" type="submit" class="btn btn-success d-flex align-items-center">
+		    									
+		        								<i class="material-icons">thumb_up</i>&nbsp;Polub
+		        								
+		    				</button>
+		    				<button th:unless="${!article.isLikedByUser(user)}" type="submit" class="btn btn-danger d-flex align-items-center">
+		    									
+		        								<i class="material-icons">thumb_down</i>&nbsp;Cofnij polubienie
+		        								
+		    				</button>
+		    			
 					</form>
                 </div>
               </article>
@@ -78,12 +98,12 @@
 	        <form th:action="@{/addArticle}" th:object="${newArticle}" class="col-lg-6 mx-auto p-3" method="post" id="addForm">
 	        
 		         <div class="mb-3 mt-3">
-		          <label for="postTitle" class="form-label">Temat posta:</label><span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger">Błąd</span>
-		          <input type="text" th:field="*{title}" class="form-control">
+		          <label for="postTitle" class="form-label">Temat artykułu:</label><span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger">Błąd</span>
+		          <input type="text" th:field="*{title}" class="form-control" required>
 		          
 		         </div>
 		         <div class="mb-3">
-		          <label for="postBody" class="form-label">Treść posta:</label><span th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="text-danger">Błąd</span>
+		          <label for="postBody" class="form-label">Treść artykułu:</label><span th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="text-danger">Błąd</span>
 		          <textarea th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea>
 		         </div>
 		         

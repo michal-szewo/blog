@@ -152,10 +152,14 @@ public class ArticlesController {
 	}
 	
 	@PostMapping(value="/articles/likes/{id}")
-	public String toggleLike(Model model, @PathVariable Long id){
+	public String toggleLike(Model model, @PathVariable Long id, @RequestParam("isLiked") boolean isLiked){
 		Article article = articleRepo.findById(id).get();
-		
-		article.addLike((User) model.getAttribute("user"));
+		User user = (User) model.getAttribute("user");
+		if(!isLiked) {
+		article.addLike(user);
+		} else {
+		article.removeLike(user);	
+		}
 		articleRepo.save(article);
 		return "redirect:/";
 	}
