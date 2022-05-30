@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<div th:fragment="lcard">
+        
+  <div class="card-footer d-flex justify-content-end align-items-center">
+                
+  <div class="dropdown">
+                	<button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" th:text="'Polubień: ' + ${article.likeCount()}">Likes count
+                	</button>
+					    <ul th:if="${article.likeCount() > 0}" class="dropdown-menu px-3">
+					      <li th:each="liker : ${article.likers}"><span th:text="${liker.username}"></span></li>
+						    
+					    </ul>
+                </div>
+                
+                
+                <div class="btn btn-white d-flex align-items-center">
+		    			
+		    			
+		    				<button th:if="${!isLiked}" th:attr="onclick=|event.preventDefault();updateLikes('${article.id}',${isLiked})|" class="btn btn-success d-flex align-items-center">
+		    									
+		        								<i class="material-icons">thumb_up</i>&nbsp;Polub
+		        								
+		    				</button>
+		    				<button th:unless="${!isLiked}" th:attr="onclick=|event.preventDefault();updateLikes('${article.id}',${isLiked})|" class="btn btn-danger d-flex align-items-center">
+		    									
+		        								<i class="material-icons">thumb_down</i>&nbsp;Cofnij polubienie
+		        								
+		    				</button>
+		    			
+					</div>         
+                
+                </div>
+              
+  
+    </div>
+</body>
+</html>

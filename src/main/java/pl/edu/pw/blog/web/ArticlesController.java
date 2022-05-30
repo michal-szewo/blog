@@ -164,6 +164,26 @@ public class ArticlesController {
 		return "redirect:/";
 	}
 	
+	//Ajax Call
+	@PostMapping(value="/likes_update")
+	public String sendNewLCard(Model model, @RequestParam(name = "id") Long id, @RequestParam(name = "liked") boolean isLiked) {
+	    
+		Article article = articleRepo.findById(id).get();
+		User user = (User) model.getAttribute("user");
+		if(!isLiked) {
+			article.addLike(user);
+			} else {
+			article.removeLike(user);	
+			}
+		articleRepo.save(article);
+		
+		model.addAttribute("article",article);
+		model.addAttribute("user",user);
+		model.addAttribute("isLiked",!isLiked);
+		
+	    return "fragments/newlcard :: lcard";
+	}
+	
 
 	/*
 	 * @RequestMapping(value="/uploadImage", method = RequestMethod.POST)
