@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -26,6 +27,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
@@ -61,7 +63,7 @@ public class Article implements Serializable{
 	            joinColumns = @JoinColumn( name="article_id"),
 	            inverseJoinColumns = @JoinColumn( name="user_id",unique=false)
 	        )
-    private Set<User> likers = new HashSet<>();
+    private Set<User> likers = new TreeSet<>();
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="author_id", nullable=false)
@@ -80,6 +82,7 @@ public class Article implements Serializable{
 	void modifiedAt() {
 		this.modifiedAt = new Date();
 	}
+	
 	
 	public int likeCount(){
 	    return getLikers().size();

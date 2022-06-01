@@ -74,12 +74,12 @@
 		    			
 		    			<!-- <input type="hidden" th:value="${article.isLikedByUser(user)}" th:attr="name='isLiked'"/> -->
 		    			
-		    				<button th:if="${!article.isLikedByUser(user)}" th:attr="onclick=|event.preventDefault();updateLikes('${article.id}',${article.isLikedByUser(user)})|" class="btn btn-success d-flex align-items-center">
+		    				<button th:if="${!article.isLikedByUser(user)}" th:attr="onclick=|updateLikes('${article.id}',${article.isLikedByUser(user)})|" class="btn btn-success d-flex align-items-center">
 		    									
 		        								<i class="material-icons">thumb_up</i>&nbsp;Polub
 		        								
 		    				</button>
-		    				<button th:unless="${!article.isLikedByUser(user)}" th:attr="onclick=|event.preventDefault();updateLikes('${article.id}',${article.isLikedByUser(user)})|" class="btn btn-danger d-flex align-items-center">
+		    				<button th:unless="${!article.isLikedByUser(user)}" th:attr="onclick=|updateLikes('${article.id}',${article.isLikedByUser(user)})|" class="btn btn-danger d-flex align-items-center">
 		    									
 		        								<i class="material-icons">thumb_down</i>&nbsp;Cofnij polubienie
 		        								
@@ -121,6 +121,28 @@
     </div>
          
     </main>
+    <script th:inline="javascript">
+		/*<![CDATA[*/
+		
+		    var count = /*[[${articles.size}]]*/ 0;
+		    $(document).ready(function () {
+		        setInterval(function () {
+		            $.ajax({
+		                type: "GET",
+		                url: "/refresh", 
+		                dataType: "json",
+		                success: function (response) {
+		                    var data = response;
+		                    if (count !== data.articlesNumber) {
+		                        window.location.href = window.location.href;
+		                    }
+		                }
+		            });
+		        }, 6000);
+		    });
+		
+		/*]]>*/
+	</script>
     <script>
       tinymce.init({
         selector: 'textarea#body',

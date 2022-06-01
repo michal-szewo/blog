@@ -40,6 +40,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.extern.slf4j.Slf4j;
+import pl.edu.pw.blog.AjaxMessage;
 import pl.edu.pw.blog.Article;
 import pl.edu.pw.blog.User;
 import pl.edu.pw.blog.data.ArticleRepository;
@@ -182,6 +183,13 @@ public class ArticlesController {
 		model.addAttribute("isLiked",!isLiked);
 		
 	    return "fragments/newlcard :: lcard";
+	}
+	
+	@RequestMapping(value="/refresh", method=RequestMethod.GET,
+            produces="application/json")
+	public @ResponseBody AjaxMessage ArticlesNumber() {
+		
+		return new AjaxMessage(articleRepo.count());
 	}
 	
 

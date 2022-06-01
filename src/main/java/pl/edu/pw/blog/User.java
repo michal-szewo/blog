@@ -18,6 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.
                                           SimpleGrantedAuthority;
@@ -34,7 +35,7 @@ import pl.edu.pw.blog.security.validation.PasswordMatches;
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor(access=AccessLevel.PRIVATE,force=true)
-public class User implements UserDetails{
+public class User implements Comparable<User>, UserDetails{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -57,6 +58,11 @@ public class User implements UserDetails{
 	@ManyToMany(mappedBy = "likers",fetch=FetchType.EAGER)
 	private Set<Article> likedArticles = new HashSet<>();
 	
+	/*
+	 * @Formula("(SELECT COUNT(*) from articles a where a.author_id = id and )")
+	 * private Integer otherLikesCount;
+	 */
+	
 	
 	@Override
 	public boolean equals(Object o) {
@@ -76,7 +82,10 @@ public class User implements UserDetails{
 		return result;
 	}
 	
-	
+	@Override
+	public int compareTo(User o) {
+		return this.username.compareTo(o.getUsername());
+	}
 	
 	  
 	  @Override
