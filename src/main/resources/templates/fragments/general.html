@@ -12,6 +12,77 @@
 <meta charset="UTF-8">
 </head>
 <body>
+<div th:fragment="article_list">
+ 	<div th:if="${message}" class="m-3 p-3r text-success" th:text="${message}">Message</div>
+			<div th:if="${errors}" class="m-3 p-3r text-danger">
+			<p th:text="${errorMessage}"></p>
+			    <ul>
+			        <li th:each="err : ${errors}" th:text="${err.getDefaultMessage()}" />
+			    </ul>
+			</div>
+ 	
+ 	<h2 th:if="${articles == null || articles.size ==0}" class="m-3 p-3r">Brak artykułów do wyświetlenia</h2>
+      		
+          
+          <div th:unless="${articles == null || articles.size ==0}">
+          
+            <article th:each="article : ${articles}" class="border my-4 shadow-sm rounded card position-relative">
+	            <div th:if="${article.author.id == user.id}" class="btn btn-white position-absolute top-0 end-0 d-flex align-items-center m-0 p-0">
+	            <a th:href="@{'/articles/edit/{id}'(id=${article.id})}" class="btn btn-white d-flex align-items-center"><i class="material-icons">mode_edit</i> Edytuj
+		    			</a>
+		           <form th:action="@{'/articles/delete/{id}'(id=${article.id})}" th:method="delete" class="btn btn-white d-flex align-items-center">
+		    			<button type="submit" class="btn align-items-center d-flex">
+		        								<i class="material-icons">delete_forever</i> Usuń
+		    			</button>
+					</form>
+	            </div>
+                
+                <h2 class="blog-post-title card-title px-3 pt-3 w-75" th:text="${article.title}">Title</h2>
+                <p class="blog-post-meta text-muted ps-3 fs-6">
+                	<span th:text="'Utworzony: ' + ${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')}"></span><br>
+                	<span th:text="'Autor: ' + ${article.author.username}"></span>
+                </p>
+        		
+                <div class="card-text p-3" th:utext="${article.body}">Body</div>
+                
+                <div th:id="'lcard' + ${article.id}" class="m-0 p-0">
+                <div class="card-footer d-flex justify-content-end align-items-center">
+                
+                <div class="dropdown">
+                	<button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" th:text="'Polubień: ' + ${article.likeCount()}">Likes count
+                	</button>
+					    <ul th:if="${article.likeCount() > 0}" class="dropdown-menu px-3">
+					      <li th:each="liker : ${article.likers}"><span th:text="${liker.username}"></span></li>
+						    
+					    </ul>
+                </div>
+                
+                
+                <div class="btn btn-white d-flex align-items-center">
+		    			
+		    			
+		    			<!-- <input type="hidden" th:value="${article.isLikedByUser(user)}" th:attr="name='isLiked'"/> -->
+		    			
+		    				<button th:if="${!article.isLikedByUser(user)}" th:attr="onclick=|updateLikes('${article.id}',${article.isLikedByUser(user)})|" class="btn btn-success d-flex align-items-center">
+		    									
+		        								<i class="material-icons">thumb_up</i>&nbsp;Polub
+		        								
+		    				</button>
+		    				<button th:unless="${!article.isLikedByUser(user)}" th:attr="onclick=|updateLikes('${article.id}',${article.isLikedByUser(user)})|" class="btn btn-danger d-flex align-items-center">
+		    									
+		        								<i class="material-icons">thumb_down</i>&nbsp;Cofnij polubienie
+		        								
+		    				</button>
+		    			
+					</div>
+					</div>
+                </div>
+              </article>
+              
+         </div>
+    
+</div>
+
 <footer th:fragment="footer" class="my-5 mx-3">
         
     <p>&copy; Viaceslav Pavlovskij, Michał Szeworski</p>
