@@ -5,7 +5,7 @@
 </head>
 <body>
 <div th:fragment="lcard">
-        
+       
   <div class="card-footer d-flex justify-content-end align-items-center">
                 
   <div class="dropdown">
@@ -21,12 +21,12 @@
                 <div class="btn btn-white d-flex align-items-center">
 		    			
 		    			
-		    				<button th:if="${!isLiked}" th:attr="onclick=|event.preventDefault();updateLikes('${article.id}',${isLiked})|" class="btn btn-success d-flex align-items-center">
+		    				<button th:if="${!isLiked}" th:attr="onclick=|updateLikes('${article.id}',${isLiked})|" class="btn btn-success d-flex align-items-center">
 		    									
 		        								<i class="material-icons">thumb_up</i>&nbsp;Polub
 		        								
 		    				</button>
-		    				<button th:unless="${!isLiked}" th:attr="onclick=|event.preventDefault();updateLikes('${article.id}',${isLiked})|" class="btn btn-danger d-flex align-items-center">
+		    				<button th:unless="${!isLiked}" th:attr="onclick=|updateLikes('${article.id}',${isLiked})|" class="btn btn-danger d-flex align-items-center">
 		    									
 		        								<i class="material-icons">thumb_down</i>&nbsp;Cofnij polubienie
 		        								
@@ -36,7 +36,7 @@
                 
                 </div>
               
-  
-    </div>
+  </div>
+    
 </body>
 </html>

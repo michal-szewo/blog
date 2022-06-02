@@ -41,7 +41,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.extern.slf4j.Slf4j;
-import pl.edu.pw.blog.AjaxMessage;
+import pl.edu.pw.blog.AjaxDBChange;
 import pl.edu.pw.blog.Article;
 import pl.edu.pw.blog.User;
 import pl.edu.pw.blog.data.ArticleRepository;
@@ -177,7 +177,13 @@ public class ArticlesController {
 	@PostMapping(value="/likes_update")
 	public String sendNewLCard(Model model, @RequestParam(name = "id") Long id, @RequestParam(name = "liked") boolean isLiked) {
 	    
-		Article article = articleRepo.findById(id).get();
+		Article article;
+		try {
+		article = articleRepo.findById(id)
+				.orElseThrow(()-> new IllegalArgumentException("Brak artykułu o id: " + id));
+		} catch (IllegalArgumentException e) {
+			return "fragments/newlcard :: lcard";
+		}
 		User user = (User) model.getAttribute("user");
 		if(!isLiked) {
 			article.addLike(user);
@@ -195,9 +201,15 @@ public class ArticlesController {
 	
 	@RequestMapping(value="/dbChanges", method=RequestMethod.GET,
             produces="application/json")
-	public @ResponseBody AjaxMessage ArticlesNumber() {
+	public @ResponseBody AjaxDBChange ArticlesNumber() {
 		
-		return new AjaxMessage(articleRepo.count());
+		Iterable<Article> articles = articleRepo.findAll();
+		Long countLikes = 0L;
+		for (Article article : articles) {
+			countLikes += article.likeCount();
+		}
+		
+		return new AjaxDBChange(articleRepo.count(), countLikes);
 	}
 	
 

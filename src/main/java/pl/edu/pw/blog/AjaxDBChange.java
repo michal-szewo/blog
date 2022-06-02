@@ -6,10 +6,11 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class AjaxMessage {
+public class AjaxDBChange {
 	
 	@NonNull
 	private Long articlesNumber;
 	
-	
+	@NonNull
+	private Long likesNumber;
 }

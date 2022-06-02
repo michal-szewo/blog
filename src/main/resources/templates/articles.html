@@ -25,14 +25,21 @@
     <main>
     
     <div id="posts" >
-    	<div th:if="${message}" class="m-3 p-3r text-success" th:text="${message}">Message</div>
+    	<!-- <div th:if="${message}" class="m-3 p-3r text-success" th:text="${message}">Message</div>
 		<div th:if="${errors}" class="m-3 p-3r text-danger">
 		<p th:text="${errorMessage}"></p>
 		    <ul>
 		        <li th:each="err : ${errors}" th:text="${err.getDefaultMessage()}" />
 		    </ul>
-		</div>
-		<div id="articles_list">
+		</div> -->
+		<div id="articles_list" class="m-0 p-0">
+			<div th:if="${message}" class="m-3 p-3r text-success" th:text="${message}">Message</div>
+			<div th:if="${errors}" class="m-3 p-3r text-danger">
+			<p th:text="${errorMessage}"></p>
+			    <ul>
+			        <li th:each="err : ${errors}" th:text="${err.getDefaultMessage()}" />
+			    </ul>
+			</div>
             <h2 th:if="${articles == null || articles.size ==0}" class="m-3 p-3r">Brak artykułów do wyświetlenia</h2>
       		
           
@@ -124,24 +131,43 @@
     </main>
     <script th:inline="javascript">
 		/*<![CDATA[*/
-		
-		    var count = /*[[${articles.size}]]*/ 0;
+			
+			var countLikes;
+		   var countArt = /*[[${articles.size}]]*/ 0;
+		   /*[# th:each="article : ${articles}"]*/
+	        countLikes += /*[[${article.likeCount()}]]*/ 0;
+
+	    /*[/]*/
+		    
 		    $(document).ready(function () {
 		        setInterval(function () {
+		        	
+		        	 countArt = 
+		 		   
 		            $.ajax({
 		                type: "GET",
 		                url: "/dbChanges", 
 		                dataType: "json",
 		                success: function (response) {
 		                    var data = response;
-		                    if (count !== data.articlesNumber) {
-		                        //window.location.href = window.location.href;
+		                    if (countArt !== data.articlesNumber || countLikes != data.likesNumber) {
+		                        
 		                        $.get("/refreshArticles").done(function (fragment) { 
-		                           	$("#articles_list").html(fragment);});
+		                           	$("#articles_list").html(fragment);
+		                           	
+		                        });
+		                        countArt = data.articlesNumber; countLikes = data.likesNumber;
 		                    }
+		                },
+		                error: function (){
+		                	$.get("/refreshArticles").done(function (fragment) { 
+	                           	$("#articles_list").html(fragment);
+	                           	
+	                        });
+		                	countArt = data.articlesNumber; countLikes = data.likesNumber;
 		                }
 		            });
-		        }, 6000);
+		        }, 4000);
 		    });
 		
 		/*]]>*/
@@ -161,8 +187,14 @@
     	  
 			$.post("likes_update?id=" + id + "&liked="+isLiked).done(function (fragment) { 
                	$("#lcard"+id).html(fragment);
+              }).fail(function(){$.get("/refreshArticles").done(function (fragment) { 
+                 	$("#articles_list").html(fragment);
+                   	
               });
-      }
+              });
+      };
+          
+    
       
      
     </script>

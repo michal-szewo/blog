@@ -13,7 +13,15 @@
 </head>
 <body>
 <div th:fragment="article_list">
- <h2 th:if="${articles == null || articles.size ==0}" class="m-3 p-3r">Brak artykułów do wyświetlenia</h2>
+ 	<div th:if="${message}" class="m-3 p-3r text-success" th:text="${message}">Message</div>
+			<div th:if="${errors}" class="m-3 p-3r text-danger">
+			<p th:text="${errorMessage}"></p>
+			    <ul>
+			        <li th:each="err : ${errors}" th:text="${err.getDefaultMessage()}" />
+			    </ul>
+			</div>
+ 	
+ 	<h2 th:if="${articles == null || articles.size ==0}" class="m-3 p-3r">Brak artykułów do wyświetlenia</h2>
       		
           
           <div th:unless="${articles == null || articles.size ==0}">
