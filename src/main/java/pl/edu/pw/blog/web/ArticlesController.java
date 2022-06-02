@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
@@ -85,6 +86,13 @@ public class ArticlesController {
 		//model.addAttribute("user", user);
 
 		return "articles";
+	}
+	
+	@RequestMapping(value="/refreshArticles", method=RequestMethod.GET)
+	public String refreshArticles(Model model) {
+		
+		model.addAttribute("articles", articleRepo.findAllByOrderByPublishedAtDesc());
+		return "fragments/general :: article_list";
 	}
 
 	@PostMapping("/addArticle")
@@ -185,7 +193,7 @@ public class ArticlesController {
 	    return "fragments/newlcard :: lcard";
 	}
 	
-	@RequestMapping(value="/refresh", method=RequestMethod.GET,
+	@RequestMapping(value="/dbChanges", method=RequestMethod.GET,
             produces="application/json")
 	public @ResponseBody AjaxMessage ArticlesNumber() {
 		

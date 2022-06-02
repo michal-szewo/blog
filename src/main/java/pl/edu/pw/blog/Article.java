@@ -32,6 +32,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 import lombok.NonNull;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -57,7 +58,7 @@ public class Article implements Serializable{
 	@Column(length=65000)
 	private String body;
 	
-	
+	@ToString.Exclude
 	@ManyToMany(fetch=FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable( name="LIKES",
 	            joinColumns = @JoinColumn( name="article_id"),
@@ -65,6 +66,7 @@ public class Article implements Serializable{
 	        )
     private Set<User> likers = new TreeSet<>();
 	
+	@ToString.Exclude
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="author_id", nullable=false)
 	private User author;

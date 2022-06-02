@@ -28,6 +28,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import pl.edu.pw.blog.security.validation.PasswordMatches;
 
 @Entity
@@ -54,7 +55,7 @@ public class User implements Comparable<User>, UserDetails{
 	
 	
 	
-	
+	@ToString.Exclude
 	@ManyToMany(mappedBy = "likers",fetch=FetchType.EAGER)
 	private Set<Article> likedArticles = new HashSet<>();
 	

@@ -32,6 +32,7 @@
 		        <li th:each="err : ${errors}" th:text="${err.getDefaultMessage()}" />
 		    </ul>
 		</div>
+		<div id="articles_list">
             <h2 th:if="${articles == null || articles.size ==0}" class="m-3 p-3r">Brak artykułów do wyświetlenia</h2>
       		
           
@@ -92,7 +93,7 @@
               
          </div>
     
-        
+        </div>
          
     </div>
     <div id="add_post "class="row fixed-bottom bg-light border-top border-primary">
@@ -129,12 +130,14 @@
 		        setInterval(function () {
 		            $.ajax({
 		                type: "GET",
-		                url: "/refresh", 
+		                url: "/dbChanges", 
 		                dataType: "json",
 		                success: function (response) {
 		                    var data = response;
 		                    if (count !== data.articlesNumber) {
-		                        window.location.href = window.location.href;
+		                        //window.location.href = window.location.href;
+		                        $.get("/refreshArticles").done(function (fragment) { 
+		                           	$("#articles_list").html(fragment);});
 		                    }
 		                }
 		            });
