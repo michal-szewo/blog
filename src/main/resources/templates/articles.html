@@ -23,8 +23,8 @@
       </nav>
     </header>
     <main>
-    <div>
-    <form th:action="@{/}" method="get">
+    <div class="row mt-2">
+    <form th:action="@{/}" method="get" class="col-lg-5 col-12">
     <label for="sort">Sortowanie wg:</label>
     <select id="sort" class="form-select" name="sortBy">
     
@@ -33,11 +33,11 @@
     </select>
     <label for="filter">Filtruj wg autora:</label>
     <select id="filter" class="form-select" name="authorFilter">
-    
+    	<option value="" th:selected="${#strings.equals('', selectedAuthor)}">wszyscy autorzy</option>
 	  <option th:each="aut : ${authorsList}" th:value="${aut.username}" th:text="${aut.username}" th:selected="${#strings.equals(aut.username, selectedAuthor)}"></option>
 	 
     </select>
-    <button class="btn btn-primary btn-lg ds-flex align-content-center" type="submit" >Dostosuj wyniki</button>
+    <button class="btn btn-primary ds-flex align-content-center mt-2" type="submit" >Dostosuj wyniki</button>
     </form>
     </div>
     <div id="posts" >
@@ -87,16 +87,15 @@
 		   var countArt = /*[[${articles.size}]]*/ 0;
 		   /*[# th:each="article : ${articles}"]*/
 	        countLikes += /*[[${article.likeCount()}]]*/ 0;
-
+		   var maxModifiedDate = /*[[${maxModifiedDate}]]*/ 0;
+		   
+			
 	    /*[/]*/
+	    		
 		    
 		    $(document).ready(function () {
 		    	
-		    	var selected = $("#filter").find(":selected").value();
-		    	
-		    	
-		    	$("#filter").prepend("<option value=''>Brak</option>").val('');
-		    	$("#filter").val(selected).change();
+		    	console.log(maxModifiedDate);
 		    	
 		        setInterval(function () {
 		        	
@@ -108,13 +107,14 @@
 		                dataType: "json",
 		                success: function (response) {
 		                    var data = response;
-		                    if (countArt !== data.articlesNumber || countLikes != data.likesNumber) {
+		                    if (countArt !== data.articlesNumber || countLikes != data.likesNumber || maxModifiedDate< data.maxModifiedDate) {
 		                        
 		                        $.get("/refreshArticles").done(function (fragment) { 
 		                           	$("#articles_list").html(fragment);
 		                           	
 		                        });
-		                        countArt = data.articlesNumber; countLikes = data.likesNumber;
+		                        countArt = data.articlesNumber; countLikes = data.likesNumber; maxModifiedDate = date.maxModifiedDate;
+		                        
 		                    }
 		                },
 		                error: function (){
@@ -123,9 +123,18 @@
 	                           	
 	                        });
 		                	countArt = data.articlesNumber; countLikes = data.likesNumber;
+		                	$("#filter").val(selected);
 		                }
 		            });
 		        }, 4000);
+		        
+		        
+		        /* var selected = $("#filter").find(":selected").val();
+		        $("#filter").prepend("<option value=''>Brak</option>").val('');
+				$("#filter").val(selected); */
+		    	
+		    	
+		    	
 		    });
 		
 		/*]]>*/

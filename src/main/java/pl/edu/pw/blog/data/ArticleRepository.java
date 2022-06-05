@@ -1,8 +1,11 @@
 package pl.edu.pw.blog.data;
 
+import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import pl.edu.pw.blog.Article;
@@ -26,5 +29,8 @@ public interface ArticleRepository extends PagingAndSortingRepository<Article, L
 	  Set<Article> findByAuthorId(Long authorId, Sort by);
 
 	  Set<Article> findByAuthorUsername(String authorName, Sort by);
+	  
+	  @Query("select max(a.modifiedAt) from Article a")
+	  Optional<Date> findMaxModifiedDate();
 	  
 	}

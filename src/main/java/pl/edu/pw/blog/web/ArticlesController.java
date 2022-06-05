@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -131,6 +132,7 @@ public class ArticlesController {
 				session.setAttribute("authorName", userRepo.findByUsername(authorFilter.get()).getUsername());
 				authorName = userRepo.findByUsername(authorFilter.get()).getUsername();
 				} else {
+					session.setAttribute("authorName", "");
 					authorName="";
 				}
 			} else {
@@ -153,6 +155,7 @@ public class ArticlesController {
 			
 			
 			
+			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
 		
 			return "articles";
 	}
@@ -161,11 +164,13 @@ public class ArticlesController {
 	public String refreshArticles(
 			Model model, HttpSession session) {
 		
-		//model.addAttribute("articles", articleRepo.findAllByOrderByPublishedAtDesc());
-			//model.addAttribute("articles", articleRepo.findAll(Sort.by(Sort.Direction.ASC, "Author")));
+		
 		
 			String sortBy = (String) session.getAttribute("sortBy");
-			//String filterBy = (String) session.getAttribute("filterBy");
+			
+			
+			
+			
 			String authorName = (String) session.getAttribute("authorName");
 			
 			
@@ -174,15 +179,8 @@ public class ArticlesController {
 			else {
 				model.addAttribute("articles", articleRepo.findByAuthorUsername(authorName,Sort.by(Sort.Direction.DESC,sortBy)));
 			}
+			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
 			
-			/*
-			 * if (filterBy == null) model.addAttribute("articles",
-			 * articleRepo.findAll(Sort.by(Sort.Direction.DESC,sortBy))); else
-			 * if(filterBy.equals("author")) { model.addAttribute("articles",
-			 * articleRepo.findByAuthorUsername(authorName,Sort.by(sortBy))); } else {
-			 * model.addAttribute("articles",
-			 * articleRepo.findAll(Sort.by(Sort.Direction.DESC,sortBy))); }
-			 */
 				
 		
 			return "fragments/general :: article_list";
@@ -296,8 +294,11 @@ public class ArticlesController {
 		for (Article article : articles) {
 			countLikes += article.likeCount();
 		}
+		Long maxModifiedAt = articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime();
 		
-		return new AjaxDBChange(articleRepo.count(), countLikes);
+		
+		
+		return new AjaxDBChange(articleRepo.count(), countLikes, maxModifiedAt);
 	}
 	
 	@GetMapping(value="resetRefineResults")
