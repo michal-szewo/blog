@@ -53,7 +53,9 @@ public class User implements Comparable<User>, UserDetails{
 	@NonNull
 	private String fullname;
 	
-	
+	@ToString.Exclude
+	@OneToMany(mappedBy = "author")
+	private Set<Article> articles = new HashSet<>();
 	
 	@ToString.Exclude
 	@ManyToMany(mappedBy = "likers",fetch=FetchType.EAGER)
