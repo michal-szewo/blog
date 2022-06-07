@@ -16,7 +16,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy=PasswordMatchValidator.class)
 @Documented
 public @interface PasswordMatches {
-	String message() default "Podane hasła się nie zgadzają";
+	String message() default "Podane hasła nie zgadzają się";
     
     Class<?>[] groups() default {};
     

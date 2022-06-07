@@ -5,18 +5,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +50,8 @@ import pl.edu.pw.blog.AjaxDBChange;
 import pl.edu.pw.blog.Article;
 import pl.edu.pw.blog.User;
 import pl.edu.pw.blog.data.ArticleRepository;
+import pl.edu.pw.blog.data.RefineResults;
+import pl.edu.pw.blog.data.UserRepository;
 
 /**
  * Controller for the home page
@@ -54,11 +61,15 @@ import pl.edu.pw.blog.data.ArticleRepository;
  */
 
 @Controller
+@SessionAttributes("user")
 public class ArticlesController {
 	Logger log = LoggerFactory.getLogger(ArticlesController.class);
 
 	@Autowired
 	ServletContext context;
+	
+	@Autowired
+	UserRepository userRepo;
 
 	private ArticleRepository articleRepo;
 
@@ -66,33 +77,131 @@ public class ArticlesController {
 		this.articleRepo = articleRepo;
 
 	}
+	
 
+	
 	@ModelAttribute(name = "newArticle")
 	public Article article() {
 		return new Article();
 	}
-	@ModelAttribute
-	public void readUser(Model model, @AuthenticationPrincipal User user) {
-		model.addAttribute("user", user);
+	@ModelAttribute("user")
+	public User readUser(@AuthenticationPrincipal User user) {
+		return user;
 	}
-	
+	@ModelAttribute("refine")
+	public RefineResults refineResults() {
+		return new RefineResults();
+	}
 
 	@GetMapping("/")
-	public String showArticles(Model model
-			//,@AuthenticationPrincipal User user
-			) {
-
-		model.addAttribute("articles", articleRepo.findAllByOrderByPublishedAtDesc());
-		//model.addAttribute("user", user);
-
-		return "articles";
+	public String showArticles(
+			@RequestParam(name="sortBy") Optional<String> sort,
+			@RequestParam(name="authorFilter") Optional<String> authorFilter,
+			@ModelAttribute(name="refine") RefineResults refine,
+			Model model, HttpSession session){
+		
+			//User defaultAuthor = (User) model.getAttribute("user");
+			
+			String sortBy= null,authorName = null;
+			
+			
+			
+			model.addAttribute("optionsList",refine.getOptionsList());
+			model.addAttribute("authorsList",userRepo.findAllAuthors());
+			
+			if (sort.isPresent()) {
+				session.setAttribute("sortBy", sort.get());
+				sortBy = sort.get();
+				
+				
+				//String[] transformed = sortBy.split(",");
+				//log.info("transformed" + transformed[0] + ", " + transformed[1]);
+				// String sortDir = "desc";
+				// Sort sort1 = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+				// Iterable<Article> sortedArticles = articleRepo.findAll(sort1);
+				 
+				 
+			} else {
+				if(session.getAttribute("sortBy")==null) {
+					session.setAttribute("sortBy", "publishedAt,desc"); 
+					sortBy = "publishedAt,desc";
+				} else {
+					sortBy = (String) session.getAttribute("sortBy");
+					
+				}
+			}
+			model.addAttribute("selectedSort",sortBy);
+			
+			
+			
+			if (authorFilter.isPresent()) {
+				if (!authorFilter.get().equals("")) {
+				
+				session.setAttribute("authorName", userRepo.findByUsername(authorFilter.get()).getUsername());
+				authorName = userRepo.findByUsername(authorFilter.get()).getUsername();
+				} else {
+					session.setAttribute("authorName", "");
+					authorName="";
+				}
+			} else {
+				if(session.getAttribute("authorName")==null) {
+					session.setAttribute("authorName", ""); 
+					authorName = "";
+				} else {
+					authorName = (String) session.getAttribute("authorName");
+				}
+			}
+			model.addAttribute("selectedAuthor",authorName);
+			
+			String[] sortTransformed = sortBy.split(",");
+			
+			
+			String sortDir = sortTransformed[1];
+			Sort sortFinal = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortTransformed[0]).ascending() : Sort.by(sortTransformed[0]).descending();
+		
+			if (authorName.equals(""))
+				//model.addAttribute("articles", articleRepo.findAll(Sort.by(Sort.Direction.DESC,sortBy)));
+				model.addAttribute("articles", articleRepo.findAll(sortFinal));
+			else {
+				model.addAttribute("articles", articleRepo.findByAuthorUsername(authorName,sortFinal));
+			}
+			
+			
+			
+			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
+		
+			return "articles";
 	}
 	
 	@RequestMapping(value="/refreshArticles", method=RequestMethod.GET)
-	public String refreshArticles(Model model) {
+	public String refreshArticles(
+			Model model, HttpSession session) {
 		
-		model.addAttribute("articles", articleRepo.findAllByOrderByPublishedAtDesc());
-		return "fragments/general :: article_list";
+		
+		
+			String sortBy = (String) session.getAttribute("sortBy");
+			
+			
+			String authorName = (String) session.getAttribute("authorName");
+			
+			String[] sortTransformed = sortBy.split(",");
+			String sortDir = sortTransformed[1];
+			Sort sortFinal = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortTransformed[0]).ascending() : Sort.by(sortTransformed[0]).descending();
+			
+		
+			if (authorName.equals(""))
+				//model.addAttribute("articles", articleRepo.findAll(Sort.by(Sort.Direction.DESC,sortBy)));
+				model.addAttribute("articles", articleRepo.findAll(sortFinal));
+			else {
+				model.addAttribute("articles", articleRepo.findByAuthorUsername(authorName,sortFinal));
+			}
+			
+			
+			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
+			
+				
+		
+			return "fragments/general :: article_list";
 	}
 
 	@PostMapping("/addArticle")
@@ -160,18 +269,7 @@ public class ArticlesController {
 		return "forward:/articles/delete/"+id;
 	}
 	
-	@PostMapping(value="/articles/likes/{id}")
-	public String toggleLike(Model model, @PathVariable Long id, @RequestParam("isLiked") boolean isLiked){
-		Article article = articleRepo.findById(id).get();
-		User user = (User) model.getAttribute("user");
-		if(!isLiked) {
-		article.addLike(user);
-		} else {
-		article.removeLike(user);	
-		}
-		articleRepo.save(article);
-		return "redirect:/";
-	}
+	
 	
 	//Ajax Call
 	@PostMapping(value="/likes_update")
@@ -201,16 +299,31 @@ public class ArticlesController {
 	
 	@RequestMapping(value="/dbChanges", method=RequestMethod.GET,
             produces="application/json")
-	public @ResponseBody AjaxDBChange ArticlesNumber() {
+	public @ResponseBody AjaxDBChange ArticlesChanges() {
 		
 		Iterable<Article> articles = articleRepo.findAll();
+		Set<User> authorsList = userRepo.findAllAuthors();
+		List<String> authorsNamesList = authorsList.stream().map(User::getUsername).collect(Collectors.toList());
 		Long countLikes = 0L;
 		for (Article article : articles) {
 			countLikes += article.likeCount();
 		}
+		Long maxModifiedAt = articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime();
 		
-		return new AjaxDBChange(articleRepo.count(), countLikes);
+		
+		return new AjaxDBChange(articleRepo.count(), countLikes, maxModifiedAt, authorsNamesList);
 	}
+	
+	/*
+	 * @GetMapping(value="resetRefineResults") public String
+	 * resetResults(HttpSession session) { session.removeAttribute("sortBy");
+	 * session.removeAttribute("authorName"); return "/"; }
+	 */
+	
+	
+	
+	
+	
 	
 
 	/*
@@ -263,4 +376,7 @@ public class ArticlesController {
 	 * " => " + e.getMessage(); } }
 	 */
 
+	
+	
+	
 }
