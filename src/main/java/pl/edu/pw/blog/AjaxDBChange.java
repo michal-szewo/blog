@@ -1,6 +1,8 @@
 package pl.edu.pw.blog;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -18,4 +20,7 @@ public class AjaxDBChange {
 	
 	@NonNull
 	private Long maxModifiedDate;
+	
+	@NonNull
+	private List<String> authorsList;
 }

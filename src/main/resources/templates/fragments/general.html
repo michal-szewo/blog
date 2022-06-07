@@ -13,7 +13,7 @@
 </head>
 <body>
 <div th:fragment="article_list">
- 	<div th:if="${message}" class="m-3 p-3r text-success" th:text="${message}">Message</div>
+ 	<div th:if="${message}" class="m-3 p-3r text-success text-center fs-5" th:text="${message}">Message</div>
 			<div th:if="${errors}" class="m-3 p-3r text-danger">
 			<p th:text="${errorMessage}"></p>
 			    <ul>

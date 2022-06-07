@@ -18,9 +18,10 @@ public class RefineResults {
 	
 	
 	public RefineResults() {
-		optionsList.add(new Option("publishedAt", "daty publikacji (od najnowszych)"));
-		optionsList.add(new Option("authorUsername", "nazwiska autora"));
-		optionsList.add(new Option("modifiedAt", "daty modyfikacji (od najnowszych)"));
+		optionsList.add(new Option("publishedAt,desc", "daty publikacji (od najnowszych)"));
+		optionsList.add(new Option("authorUsername,asc", "nazwiska autora"));
+		optionsList.add(new Option("modifiedAt,desc", "daty modyfikacji (od najnowszych)"));
+		optionsList.add(new Option("publishedAt,asc", "daty publikacji (od najstarszych)"));
 		
 	}
 	

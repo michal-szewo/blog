@@ -88,14 +88,14 @@
 		   /*[# th:each="article : ${articles}"]*/
 	        countLikes += /*[[${article.likeCount()}]]*/ 0;
 		   var maxModifiedDate = /*[[${maxModifiedDate}]]*/ 0;
-		   
+		   var authorsNumber = /*[[${authorsList.size()}]]*/ 0;
 			
 	    /*[/]*/
 	    		
 		    
 		    $(document).ready(function () {
 		    	
-		    	console.log(maxModifiedDate);
+		    	
 		    	
 		        setInterval(function () {
 		        	
@@ -107,13 +107,24 @@
 		                dataType: "json",
 		                success: function (response) {
 		                    var data = response;
-		                    if (countArt !== data.articlesNumber || countLikes != data.likesNumber || maxModifiedDate< data.maxModifiedDate) {
+		                    if (countArt != data.articlesNumber || countLikes != data.likesNumber || maxModifiedDate< data.maxModifiedDate 
+		                    	
+		                    ) {
 		                        
 		                        $.get("/refreshArticles").done(function (fragment) { 
 		                           	$("#articles_list").html(fragment);
-		                           	
+		                           	if (authorsNumber < data.authorsList.length){
+		                           		var filterVal = $("#filter option:selected").val();
+		                     
+		                           		$("#filter").children().not(':first-child').remove() ;
+		                           		
+		                           	$.each(data.authorsList, function(i,item){
+		                           		$("#filter").append("<option value='"+item+"'>" + item + "</option>");
+		                           	});
+		                           	$("#filter").val(filterVal).change();
+		                           	};
 		                        });
-		                        countArt = data.articlesNumber; countLikes = data.likesNumber; maxModifiedDate = date.maxModifiedDate;
+		                        countArt = data.articlesNumber; countLikes = data.likesNumber; maxModifiedDate = data.maxModifiedDate;
 		                        
 		                    }
 		                },

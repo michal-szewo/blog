@@ -96,14 +96,13 @@ public class ArticlesController {
 	@GetMapping("/")
 	public String showArticles(
 			@RequestParam(name="sortBy") Optional<String> sort,
-			@RequestParam(name="filterBy") Optional<String> filter,
 			@RequestParam(name="authorFilter") Optional<String> authorFilter,
 			@ModelAttribute(name="refine") RefineResults refine,
 			Model model, HttpSession session){
 		
-			User defaultAuthor = (User) model.getAttribute("user");
+			//User defaultAuthor = (User) model.getAttribute("user");
 			
-			String sortBy= null,filterBy = null, authorName = null;
+			String sortBy= null,authorName = null;
 			
 			
 			
@@ -113,10 +112,19 @@ public class ArticlesController {
 			if (sort.isPresent()) {
 				session.setAttribute("sortBy", sort.get());
 				sortBy = sort.get();
+				
+				
+				//String[] transformed = sortBy.split(",");
+				//log.info("transformed" + transformed[0] + ", " + transformed[1]);
+				// String sortDir = "desc";
+				// Sort sort1 = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+				// Iterable<Article> sortedArticles = articleRepo.findAll(sort1);
+				 
+				 
 			} else {
 				if(session.getAttribute("sortBy")==null) {
-					session.setAttribute("sortBy", "publishedAt"); 
-					sortBy = "publishedAt";
+					session.setAttribute("sortBy", "publishedAt,desc"); 
+					sortBy = "publishedAt,desc";
 				} else {
 					sortBy = (String) session.getAttribute("sortBy");
 					
@@ -145,12 +153,17 @@ public class ArticlesController {
 			}
 			model.addAttribute("selectedAuthor",authorName);
 			
+			String[] sortTransformed = sortBy.split(",");
 			
+			
+			String sortDir = sortTransformed[1];
+			Sort sortFinal = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortTransformed[0]).ascending() : Sort.by(sortTransformed[0]).descending();
 		
 			if (authorName.equals(""))
-				model.addAttribute("articles", articleRepo.findAll(Sort.by(Sort.Direction.DESC,sortBy)));
+				//model.addAttribute("articles", articleRepo.findAll(Sort.by(Sort.Direction.DESC,sortBy)));
+				model.addAttribute("articles", articleRepo.findAll(sortFinal));
 			else {
-				model.addAttribute("articles", articleRepo.findByAuthorUsername(authorName,Sort.by(Sort.Direction.DESC,sortBy)));
+				model.addAttribute("articles", articleRepo.findByAuthorUsername(authorName,sortFinal));
 			}
 			
 			
@@ -169,16 +182,21 @@ public class ArticlesController {
 			String sortBy = (String) session.getAttribute("sortBy");
 			
 			
-			
-			
 			String authorName = (String) session.getAttribute("authorName");
 			
+			String[] sortTransformed = sortBy.split(",");
+			String sortDir = sortTransformed[1];
+			Sort sortFinal = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortTransformed[0]).ascending() : Sort.by(sortTransformed[0]).descending();
 			
+		
 			if (authorName.equals(""))
-				model.addAttribute("articles", articleRepo.findAll(Sort.by(Sort.Direction.DESC,sortBy)));
+				//model.addAttribute("articles", articleRepo.findAll(Sort.by(Sort.Direction.DESC,sortBy)));
+				model.addAttribute("articles", articleRepo.findAll(sortFinal));
 			else {
-				model.addAttribute("articles", articleRepo.findByAuthorUsername(authorName,Sort.by(Sort.Direction.DESC,sortBy)));
+				model.addAttribute("articles", articleRepo.findByAuthorUsername(authorName,sortFinal));
 			}
+			
+			
 			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
 			
 				
@@ -251,13 +269,7 @@ public class ArticlesController {
 		return "forward:/articles/delete/"+id;
 	}
 	
-	/*
-	 * @PostMapping(value="/articles/likes/{id}") public String toggleLike(Model
-	 * model, @PathVariable Long id, @RequestParam("isLiked") boolean isLiked){
-	 * Article article = articleRepo.findById(id).get(); User user = (User)
-	 * model.getAttribute("user"); if(!isLiked) { article.addLike(user); } else {
-	 * article.removeLike(user); } articleRepo.save(article); return "redirect:/"; }
-	 */
+	
 	
 	//Ajax Call
 	@PostMapping(value="/likes_update")
@@ -287,9 +299,11 @@ public class ArticlesController {
 	
 	@RequestMapping(value="/dbChanges", method=RequestMethod.GET,
             produces="application/json")
-	public @ResponseBody AjaxDBChange ArticlesNumber() {
+	public @ResponseBody AjaxDBChange ArticlesChanges() {
 		
 		Iterable<Article> articles = articleRepo.findAll();
+		Set<User> authorsList = userRepo.findAllAuthors();
+		List<String> authorsNamesList = authorsList.stream().map(User::getUsername).collect(Collectors.toList());
 		Long countLikes = 0L;
 		for (Article article : articles) {
 			countLikes += article.likeCount();
@@ -297,16 +311,14 @@ public class ArticlesController {
 		Long maxModifiedAt = articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime();
 		
 		
-		
-		return new AjaxDBChange(articleRepo.count(), countLikes, maxModifiedAt);
+		return new AjaxDBChange(articleRepo.count(), countLikes, maxModifiedAt, authorsNamesList);
 	}
 	
-	@GetMapping(value="resetRefineResults")
-	public String resetResults(HttpSession session) {
-		session.removeAttribute("sortBy");
-		session.removeAttribute("authorName");
-		return "/";
-	}
+	/*
+	 * @GetMapping(value="resetRefineResults") public String
+	 * resetResults(HttpSession session) { session.removeAttribute("sortBy");
+	 * session.removeAttribute("authorName"); return "/"; }
+	 */
 	
 	
 	
