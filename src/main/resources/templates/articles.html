@@ -5,6 +5,8 @@
   	<title>Blog</title>
 	<th:block th:include="fragments/general.html :: headerfiles">
         </th:block>
+        <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+		<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
   	
 </head>
 
@@ -160,16 +162,34 @@
   		
       });
       
-      
+      var token = $("meta[name='_csrf']").attr("content");
+      var header = $("meta[name='_csrf_header']").attr("content");
       var updateLikes = function(id,isLiked){
     	  
-			$.post("likes_update?id=" + id + "&liked="+isLiked).done(function (fragment) { 
+		/* 	$.post("likes_update?id=" + id + "&liked="+isLiked).done(function (fragment) { 
                	$("#lcard"+id).html(fragment);
               }).fail(function(){$.get("/refreshArticles").done(function (fragment) { 
                  	$("#articles_list").html(fragment);
                    	
               });
-              });
+              }); */
+			
+			$.ajax({
+				  type: 'POST',
+				  url: "likes_update?id=" + id + "&liked="+isLiked,
+				  beforeSend: function(request){
+					  request.setRequestHeader(header, token);
+				  }
+				  
+				 
+				}).done(function (fragment) { 
+	               	$("#lcard"+id).html(fragment);
+	              }).fail(function(){$.get("/refreshArticles").done(function (fragment) { 
+	                 	$("#articles_list").html(fragment);
+	                   	
+	              });
+	              });
+			
       };
           
     

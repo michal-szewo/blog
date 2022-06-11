@@ -70,15 +70,10 @@ public class ArticlesController {
 	
 	@Autowired
 	UserRepository userRepo;
-
-	private ArticleRepository articleRepo;
-
-	public ArticlesController(ArticleRepository articleRepo) {
-		this.articleRepo = articleRepo;
-
-	}
 	
-
+	@Autowired
+	ArticleRepository articleRepo;
+	
 	
 	@ModelAttribute(name = "newArticle")
 	public Article article() {
@@ -206,7 +201,6 @@ public class ArticlesController {
 
 	@PostMapping("/addArticle")
 	public String addArticle(@ModelAttribute("newArticle") @Valid Article article, BindingResult errors,
-			//@AuthenticationPrincipal User user,
 			Model model,
 			RedirectAttributes redirectAttributes
 			) {
@@ -225,22 +219,44 @@ public class ArticlesController {
 	}
 
 	@PostMapping(value = "/articles/delete/{id}")
-	public String deleteArticle(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-		articleRepo.deleteById(id);
-		redirectAttributes.addFlashAttribute("message","Usunięto artykuł o id: " + id);
+	public String deleteArticle(@PathVariable Long id, Model model,RedirectAttributes redirectAttributes) {
+		String message;
+		
+		if (isAuthor((User) model.getAttribute("user"),id)){
+			articleRepo.deleteById(id);
+			message = "Usunięto artykuł o id: ";
+		} else {
+			message = "Nie jesteś autorem artykułu o id: ";
+			}
+		
+		redirectAttributes.addFlashAttribute("message",message + id);
 		return "redirect:/";
 	}
 	
 	@GetMapping(value = "/articles/edit/{id}")
-	public String editArticle(@PathVariable Long id, Model model
-			//,@AuthenticationPrincipal User user
+	public String editArticle(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes
+			
 			) {
-		Article article = articleRepo.findById(id)
-				.orElseThrow(()-> new IllegalArgumentException("Brak artykułu o id: " + id));
+		if (isAuthor((User) model.getAttribute("user"),id)){
+			
+			Article article = articleRepo.findById(id)
+					.orElseThrow(()-> new IllegalArgumentException("Brak artykułu o id: " + id));
+			
+			model.addAttribute("article", article);
+			
+			return "edit";
+		} else {
+			
+			redirectAttributes.addFlashAttribute("message","Nie masz uprawnień do edycji artykułu o: " + id);
+			return "redirect:/";
+			
+			}
 		
-		model.addAttribute("article", article);
-		//model.addAttribute("user", user);
-		return "edit";
+		
+		
+		
+		
+		
 		
 	}
 	
@@ -312,6 +328,14 @@ public class ArticlesController {
 		
 		
 		return new AjaxDBChange(articleRepo.count(), countLikes, maxModifiedAt, authorsNamesList);
+	}
+	
+	private boolean isAuthor(@AuthenticationPrincipal User user, Long article_id) {
+		User authUser = user;
+		User author = articleRepo.findById(article_id).get().getAuthor();
+		if (authUser.equals(author)) return true;
+		
+		return false;
 	}
 	
 	/*

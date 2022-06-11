@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation
            .authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web
            .builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +26,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -58,8 +60,8 @@ protected void configure(HttpSecurity http) throws Exception {
          .sameOrigin()
  
     .and()
-      .csrf().disable()
-   // .ignoringAntMatchers("/h2-console/**")
+      .csrf()
+      .ignoringAntMatchers("/h2-console/**")
 
     
    
