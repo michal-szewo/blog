@@ -24,7 +24,7 @@ public class CustomErrorController implements ErrorController  {
 	        	errorMsg = "Nie znaleziono strony, której szukasz.";
 	        }
 	        else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-	        	errorMsg = "Błąd serwera";
+	        	errorMsg = "Ups! Coś poszło nie tak. Nie panikuj.";
 	        }
 	        else if(statusCode == HttpStatus.FORBIDDEN.value()) {
 	        	errorMsg = "Nie masz uprawnień do tego zasobu";
