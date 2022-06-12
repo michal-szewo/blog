@@ -195,7 +195,7 @@ public class ArticlesController{
 			
 			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
 			
-				
+			model.addAttribute("authorsList",userRepo.findAllAuthors());
 		
 			return "fragments/general :: article_list";
 	}
@@ -301,6 +301,7 @@ public class ArticlesController{
 				.orElseThrow(()-> new Exception("Brak artykułu o id: " + id));
 			
 		} catch (Exception e) {
+			log.error("Brak artykułu o id: " + id);
 			return "fragments/newlcard :: lcard";
 		}
 		User user = (User) model.getAttribute("user");
@@ -324,9 +325,9 @@ public class ArticlesController{
 		
 		Iterable<Article> articles = articleRepo.findAll();
 		Set<User> authorsList = userRepo.findAllAuthors();
-		log.info("auhtorsList " + authorsList.toString() + " authorsListSize: " + authorsList.size());
+		
 		List<String> authorsNamesList = authorsList.stream().map(User::getUsername).collect(Collectors.toList());
-		log.info("authorsNamesList " + authorsNamesList.toString());
+		
 		Long countLikes = 0L;
 		for (Article article : articles) {
 			countLikes += article.likeCount();

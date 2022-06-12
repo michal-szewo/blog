@@ -115,7 +115,7 @@
 		                        
 		                        $.get("/refreshArticles").done(function (fragment) { 
 		                           	$("#articles_list").html(fragment);
-		                           	if (authorsNumber < data.authorsList.length){
+		                           	if (authorsNumber > data.authorsList.length || authorsNumber < data.authorsList.length){
 		                           		var filterVal = $("#filter option:selected").val();
 		                     
 		                           		$("#filter").children().not(':first-child').remove() ;
@@ -128,7 +128,7 @@
 		                           	};
 		                        });
 		                        countArt = data.articlesNumber; countLikes = data.likesNumber; maxModifiedDate = data.maxModifiedDate;
-		                       //authorsNumber = data.authorsList.length;
+		                       
 		                        
 		                    }
 		                },
