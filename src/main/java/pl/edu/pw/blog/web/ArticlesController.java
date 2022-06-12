@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -62,7 +63,7 @@ import pl.edu.pw.blog.data.UserRepository;
 
 @Controller
 @SessionAttributes("user")
-public class ArticlesController {
+public class ArticlesController{
 	Logger log = LoggerFactory.getLogger(ArticlesController.class);
 
 	@Autowired
@@ -70,15 +71,10 @@ public class ArticlesController {
 	
 	@Autowired
 	UserRepository userRepo;
-
-	private ArticleRepository articleRepo;
-
-	public ArticlesController(ArticleRepository articleRepo) {
-		this.articleRepo = articleRepo;
-
-	}
 	
-
+	@Autowired
+	ArticleRepository articleRepo;
+	
 	
 	@ModelAttribute(name = "newArticle")
 	public Article article() {
@@ -199,14 +195,13 @@ public class ArticlesController {
 			
 			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
 			
-				
+			model.addAttribute("authorsList",userRepo.findAllAuthors());
 		
 			return "fragments/general :: article_list";
 	}
 
 	@PostMapping("/addArticle")
 	public String addArticle(@ModelAttribute("newArticle") @Valid Article article, BindingResult errors,
-			//@AuthenticationPrincipal User user,
 			Model model,
 			RedirectAttributes redirectAttributes
 			) {
@@ -225,39 +220,64 @@ public class ArticlesController {
 	}
 
 	@PostMapping(value = "/articles/delete/{id}")
-	public String deleteArticle(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-		articleRepo.deleteById(id);
-		redirectAttributes.addFlashAttribute("message","Usunięto artykuł o id: " + id);
+	public String deleteArticle(@PathVariable Long id, Model model,RedirectAttributes redirectAttributes) {
+		String message;
+		
+		if (isAuthor((User) model.getAttribute("user"),id)){
+			articleRepo.deleteById(id);
+			message = "Usunięto artykuł o id: ";
+		} else {
+			message = "Nie jesteś autorem artykułu o id: ";
+			}
+		
+		redirectAttributes.addFlashAttribute("message",message + id);
 		return "redirect:/";
 	}
 	
 	@GetMapping(value = "/articles/edit/{id}")
-	public String editArticle(@PathVariable Long id, Model model
-			//,@AuthenticationPrincipal User user
+	public String editArticle(@PathVariable Long id, Model model,  RedirectAttributes redirectAttributes
+			
 			) {
-		Article article = articleRepo.findById(id)
-				.orElseThrow(()-> new IllegalArgumentException("Brak artykułu o id: " + id));
+		if (isAuthor((User) model.getAttribute("user"),id)){
+			
+			Article article = articleRepo.findById(id)
+					.orElseThrow(()-> new IllegalArgumentException("Brak artykułu o id: " + id));
+			
+			model.addAttribute("article", article);
+			
+			return "edit";
+		} else {
+			
+			redirectAttributes.addFlashAttribute("message","Nie masz uprawnień do edycji artykułu id: " + id);
+			return "redirect:/";
+			
+			}
 		
-		model.addAttribute("article", article);
-		//model.addAttribute("user", user);
-		return "edit";
+
 		
 	}
 	
 	@RequestMapping(value="/modifyArticle/{id}", method = RequestMethod.POST, params = "modify")
-	public String modifyArticle(@ModelAttribute("article") @Valid Article article, BindingResult errors, @PathVariable Long id, RedirectAttributes redirectAttributes) {
+	public String modifyArticle(@ModelAttribute("article") @Valid Article article, BindingResult errors, @PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
 		
+		if (!isAuthor((User) model.getAttribute("user"),id)){
+			redirectAttributes.addFlashAttribute("message","Nie masz uprawnień do edycji artykułu id: " + id);
+			return "redirect:/";
+		}
 		
+		Article modifiedArticle = articleRepo.findById(id).get();
 		if (errors.hasErrors()) {
-
-			return "edit";
+			redirectAttributes.addFlashAttribute("errorMessage","Nie udało się zmodyfikować artykułu:");
+			redirectAttributes.addFlashAttribute("errors",errors.getAllErrors());
+			
+			return "redirect:/articles/edit/"+modifiedArticle.getId();
 		  }
 
-			Article modifiedArticle = articleRepo.findById(id).get();
+			
 			modifiedArticle.setTitle(article.getTitle());
 			modifiedArticle.setBody(article.getBody());
 			articleRepo.save(modifiedArticle);
-			redirectAttributes.addFlashAttribute("message","Artykuł zapisano");
+			redirectAttributes.addFlashAttribute("message","Artykuł zapisano.");
 			return "redirect:/articles/edit/"+modifiedArticle.getId();
 			
 		
@@ -278,8 +298,10 @@ public class ArticlesController {
 		Article article;
 		try {
 		article = articleRepo.findById(id)
-				.orElseThrow(()-> new IllegalArgumentException("Brak artykułu o id: " + id));
-		} catch (IllegalArgumentException e) {
+				.orElseThrow(()-> new Exception("Brak artykułu o id: " + id));
+			
+		} catch (Exception e) {
+			log.error("Brak artykułu o id: " + id);
 			return "fragments/newlcard :: lcard";
 		}
 		User user = (User) model.getAttribute("user");
@@ -303,7 +325,9 @@ public class ArticlesController {
 		
 		Iterable<Article> articles = articleRepo.findAll();
 		Set<User> authorsList = userRepo.findAllAuthors();
+		
 		List<String> authorsNamesList = authorsList.stream().map(User::getUsername).collect(Collectors.toList());
+		
 		Long countLikes = 0L;
 		for (Article article : articles) {
 			countLikes += article.likeCount();
@@ -312,6 +336,14 @@ public class ArticlesController {
 		
 		
 		return new AjaxDBChange(articleRepo.count(), countLikes, maxModifiedAt, authorsNamesList);
+	}
+	
+	private boolean isAuthor(@AuthenticationPrincipal User user, Long article_id) {
+		User authUser = user;
+		User author = articleRepo.findById(article_id).get().getAuthor();
+		if (authUser.equals(author)) return true;
+		
+		return false;
 	}
 	
 	/*

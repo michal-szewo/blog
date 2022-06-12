@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -45,9 +46,12 @@ public class User implements Comparable<User>, UserDetails{
 	private Long id;
 	
 	@NonNull
+	@Column(nullable=false, unique=true)
 	private String username;
 	
 	@NonNull
+	@ToString.Exclude
+	@Column(nullable=false)
 	private String password;
 	
 	@NonNull
@@ -61,10 +65,6 @@ public class User implements Comparable<User>, UserDetails{
 	@ManyToMany(mappedBy = "likers",fetch=FetchType.EAGER)
 	private Set<Article> likedArticles = new HashSet<>();
 	
-	/*
-	 * @Formula("(SELECT COUNT(*) from articles a where a.author_id = id and )")
-	 * private Integer otherLikesCount;
-	 */
 	
 	
 	@Override

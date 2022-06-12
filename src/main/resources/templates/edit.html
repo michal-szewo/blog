@@ -24,17 +24,19 @@
     </header>
     <main>
     	
-    <div id="post"><div th:if="${message}" th:text="${message}" class="mb-3 mt-3 mx-3 text-success text-center fs-5">Message</div>
+    <div id="post">
+    <!-- <div th:if="${message}" th:text="${message}" class="mb-3 mt-3 mx-3 text-success text-center fs-5">Message</div> -->
+    <div th:include="fragments/general.html :: articles_errors" class="m-0 p-0"></div>
       	  <form name="editForm" th:action="@{'/modifyArticle/{id}'(id=${article.id})}" th:object="${article}" class="row" method="post" id="addForm">
 	        <div class="col-lg-8">	
 	        	
 		         <div class="mb-3 mt-3">
 		          <label for="postTitle" class="form-label">Temat artykułu:</label>
-		          <input id="postTitle" type="text" th:field="*{title}" class="form-control" onkeyup="document.getElementById('editBtn').disabled = false"><span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger">Błąd</span>
+		          <input id="postTitle" type="text" th:field="*{title}" class="form-control" onkeyup="document.getElementById('editBtn').disabled = false" required><!-- <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger">Błąd</span> -->
 		         </div>
 		         <div class="mb-3">
 		          <label for="postBody" class="form-label">Treść posta:</label>
-		          <textarea th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea><span th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="text-danger">Błąd</span>
+		          <textarea th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea><!-- <span th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="text-danger">Błąd</span> -->
 		         </div>
 		    	 <div class="d-flex">
 		          <button name="modify" value="modify" type="submit" id="editBtn" class="btn btn-md btn-success d-flex mt-3 align-items-center" disabled><i class="material-icons">mode_edit</i>&nbsp;Zapisz zmiany</button>
@@ -80,6 +82,14 @@
        
   		
       });
+      $(document).ready(function() {
+    	    $("#deleteBtn").click(function(event) {
+    	        if( !confirm('Czy jesteś pewien, że chcesz usunąć artykuł?') ){
+    	            event.preventDefault();
+    	        } 
+
+    	    });
+    	});
     </script>
     <footer th:replace="fragments/general.html :: footer"></footer>
     </body>

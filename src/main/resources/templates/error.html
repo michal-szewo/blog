@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+  	<title>Blog</title>
+	<th:block th:include="fragments/general.html :: headerfiles">
+        </th:block>
+  	
+</head>
+<body class="container d-flex justify-content-center">
+<div class="col-lg-6 col-12 d-flex flex-column"><div class="d-flex flex-column justify-content-center align-items-center p-3"><i class="material-icons d-inline-block display-3">mood_bad</i><h1 class="ms-3 display-5" th:text="${errorMsg}">Ups. Coś poszło nie tak!</h1></div>
+<a th:href="@{/}" class="mt-5 btn btn-primary d-flex align-items-center justify-content-center"><i class="material-icons">home</i>&nbsp;<span>Wróć do strony początkowej</span></a>
+<div>
+</body>
+</html>
