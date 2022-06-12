@@ -89,10 +89,10 @@
 		   var countArt = /*[[${articles.size}]]*/ 0;
 		   /*[# th:each="article : ${articles}"]*/
 	        countLikes += /*[[${article.likeCount()}]]*/ 0;
+	        /*[/]*/
 		   var maxModifiedDate = /*[[${maxModifiedDate}]]*/ 0;
-		   var authorsNumber = /*[[${authorsList.size()}]]*/ 0;
-			
-	    /*[/]*/
+		   var authorsNumber;
+		   
 	    		
 		    
 		    $(document).ready(function () {
@@ -101,8 +101,8 @@
 		    	
 		        setInterval(function () {
 		        	
-		        	
-		 		   
+	        	authorsNumber = /*[[${authorsList.size()}]]*/ 0;	
+       	 
 		            $.ajax({
 		                type: "GET",
 		                url: "/dbChanges", 
@@ -120,13 +120,15 @@
 		                     
 		                           		$("#filter").children().not(':first-child').remove() ;
 		                           		
-		                           	$.each(data.authorsList, function(i,item){
+		                           		$.each(data.authorsList, function(i,item){
 		                           		$("#filter").append("<option value='"+item+"'>" + item + "</option>");
-		                           	});
-		                           	$("#filter").val(filterVal).change();
+		                           		});
+		                           		
+		                           		$("#filter").val(filterVal).change();
 		                           	};
 		                        });
 		                        countArt = data.articlesNumber; countLikes = data.likesNumber; maxModifiedDate = data.maxModifiedDate;
+		                       //authorsNumber = data.authorsList.length;
 		                        
 		                    }
 		                },
@@ -135,7 +137,7 @@
 	                           	$("#articles_list").html(fragment);
 	                           	
 	                        });
-		                	countArt = data.articlesNumber; countLikes = data.likesNumber;
+		                	//countArt = data.articlesNumber; countLikes = data.likesNumber;
 		                	$("#filter").val(selected);
 		                }
 		            });
@@ -166,33 +168,32 @@
       var header = $("meta[name='_csrf_header']").attr("content");
       var updateLikes = function(id,isLiked){
     	  
-		/* 	$.post("likes_update?id=" + id + "&liked="+isLiked).done(function (fragment) { 
-               	$("#lcard"+id).html(fragment);
-              }).fail(function(){$.get("/refreshArticles").done(function (fragment) { 
-                 	$("#articles_list").html(fragment);
-                   	
-              });
-              }); */
+		
 			
 			$.ajax({
 				  type: 'POST',
 				  url: "likes_update?id=" + id + "&liked="+isLiked,
 				  beforeSend: function(request){
 					  request.setRequestHeader(header, token);
-				  }
+				  },
+				  success: function (fragment) { 
+		               	$("#lcard"+id).html(fragment);
 				  
 				 
-				}).done(function (fragment) { 
-	               	$("#lcard"+id).html(fragment);
-	              }).fail(function(){$.get("/refreshArticles").done(function (fragment) { 
+				  },
+				  error: function(){
+					$.get("/refreshArticles").done(function (fragment) { 
+				   
 	                 	$("#articles_list").html(fragment);
 	                   	
 	              });
-	              });
+				}});
+      }
+	              
 			
-      };
-          
-    
+      
+     
+      
       
      
     </script>

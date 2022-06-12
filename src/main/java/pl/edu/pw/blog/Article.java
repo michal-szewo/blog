@@ -30,27 +30,31 @@ import javax.validation.constraints.NotBlank;
 import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
 
 @Data
 @Entity
 @Table(name="ARTICLES")
+@NoArgsConstructor
 public class Article implements Serializable{
 	
-	public Article() {	
-	}
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
 	@NonNull
 	@NotBlank(message="Podanie tytułu jest obowiązkowe")
+	@Column(nullable=false)
 	private String title;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat (pattern="yyyy-MM-dd HH:mm:ss")
+	@Column(nullable=false,updatable=false)
 	private Date publishedAt;
 	
 	@NonNull

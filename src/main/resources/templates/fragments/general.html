@@ -13,14 +13,19 @@
 </head>
 <body>
 <div th:fragment="article_list">
- 	<div th:if="${message}" class="m-3 p-3r text-success text-center fs-5" th:text="${message}">Message</div>
-			<div th:if="${errors}" class="m-3 p-3r text-danger">
-			<p th:text="${errorMessage}"></p>
+ 	<div th:fragment="articles_errors" class="m-0 p-0">
+ 	<div th:if="${message}" class="m-3 p-3r text-success text-center fs-5">
+ 	<i class="material-icons d-block display-5">done</i>
+ 	<p class="m-0 p-0" th:text="${message}"></p>
+ 	</div>
+			<div th:if="${errors}" class="m-3 p-3r text-danger text-center fs-5">
+			<i class="material-icons d-block display-5">error</i>
+			<p class="p-0 m-0" th:text="${errorMessage}">error</p>
 			    <ul>
 			        <li th:each="err : ${errors}" th:text="${err.getDefaultMessage()}" />
 			    </ul>
 			</div>
- 	
+ 	</div>
  	<h2 th:if="${articles == null || articles.size ==0}" class="m-3 p-3r">Brak artykułów do wyświetlenia</h2>
       		
           
@@ -31,7 +36,7 @@
 	            <a th:href="@{'/articles/edit/{id}'(id=${article.id})}" class="btn btn-white d-flex align-items-center"><i class="material-icons">mode_edit</i> Edytuj
 		    			</a>
 		           <form th:action="@{'/articles/delete/{id}'(id=${article.id})}" th:method="delete" class="btn btn-white d-flex align-items-center">
-		    			<button type="submit" class="btn align-items-center d-flex">
+		    			<button type="submit" class="btn align-items-center d-flex deleteBtn" th:attr="onclick=|if(!confirm('Czy jesteś pewien, że chcesz usunąć artykuł?')){event.preventDefault()}|">
 		        								<i class="material-icons">delete_forever</i> Usuń
 		    			</button>
 					</form>

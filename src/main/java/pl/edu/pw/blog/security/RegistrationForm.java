@@ -21,6 +21,7 @@ public class RegistrationForm {
 	private String username;
 	
 	@NotBlank(message="Podanie hasła jest obowiązkowe")
+	@Size(min=8, message="Hasło powinno liczyć przynajmniej 8 znaków")
 	private String password;
 	
 	private String matchingPassword;
