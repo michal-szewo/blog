@@ -1,10 +1,7 @@
 package pl.edu.pw.blog.data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 
 
 import lombok.Data;
@@ -19,10 +16,10 @@ public class RefineResults {
 	
 	public RefineResults() {
 		optionsList.add(new Option("publishedAt,desc", "daty publikacji (od najnowszych)"));
+		optionsList.add(new Option("publishedAt,asc", "daty publikacji (od najstarszych)"));
 		optionsList.add(new Option("authorUsername,asc", "nazwiska autora"));
 		optionsList.add(new Option("modifiedAt,desc", "daty modyfikacji (od najnowszych)"));
-		optionsList.add(new Option("publishedAt,asc", "daty publikacji (od najstarszych)"));
-		
+
 	}
 	
 	
