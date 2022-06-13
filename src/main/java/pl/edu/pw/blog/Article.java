@@ -2,14 +2,11 @@ package pl.edu.pw.blog;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -27,22 +23,26 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
-import org.hibernate.annotations.Formula;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 @Data
 @Entity
 @Table(name="ARTICLES")
+@RequiredArgsConstructor
 @NoArgsConstructor
 public class Article implements Serializable{
 	
 	
+	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
@@ -71,6 +71,7 @@ public class Article implements Serializable{
     private Set<User> likers = new TreeSet<>();
 	
 	@ToString.Exclude
+	@NonNull
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="author_id", nullable=false)
 	private User author;

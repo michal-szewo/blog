@@ -155,14 +155,14 @@
 		/*]]>*/
 	</script>
     <script>
-      tinymce.init({
+     	tinymce.init({
         selector: 'textarea#body',
         plugins: 'link image lists code',
         toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image code| forecolor language',
         language: 'pl'
        
   		
-      });
+      }); 
       
       var token = $("meta[name='_csrf']").attr("content");
       var header = $("meta[name='_csrf_header']").attr("content");

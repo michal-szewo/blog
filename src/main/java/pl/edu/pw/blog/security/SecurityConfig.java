@@ -19,8 +19,6 @@ import org.springframework.security.config.annotation.web
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 
 
@@ -38,14 +36,16 @@ private UserDetailsService userDetailsService;
 protected void configure(HttpSecurity http) throws Exception {
   http
   .authorizeRequests()
+  			
+
+			.antMatchers("/h2-console/**","/register","/login/**").access("permitAll")
+			.antMatchers("/**").access("hasRole('ROLE_USER')")
 			
-			.antMatchers("/").access("hasRole('ROLE_USER')").antMatchers("/h2-console","/registration").access("permitAll")
-			
-			
-			.and()
+	.and()
 			
       .formLogin()
         .loginPage("/login")
+        .defaultSuccessUrl("/", true)
         .failureUrl("/login?error=true")
         
       
