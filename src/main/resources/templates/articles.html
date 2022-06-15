@@ -91,9 +91,8 @@
 	        countLikes += /*[[${article.likeCount()}]]*/ 0;
 	        /*[/]*/
 		   var maxModifiedDate = /*[[${maxModifiedDate}]]*/ 0;
-		   var authorsNumber;
-		   
-	    		
+		  // var authorsNumber;
+		   var authorsNumber = /*[[${authorsList.size()}]]*/ 0;
 		    
 		    $(document).ready(function () {
 		    	
@@ -101,15 +100,15 @@
 		    	
 		        setInterval(function () {
 		        	
-	        	authorsNumber = /*[[${authorsList.size()}]]*/ 0;	
-       	 
+	        	
+       	 		
 		            $.ajax({
 		                type: "GET",
 		                url: "/dbChanges", 
 		                dataType: "json",
 		                success: function (response) {
 		                    var data = response;
-		                    if (countArt != data.articlesNumber || countLikes != data.likesNumber || maxModifiedDate< data.maxModifiedDate 
+		                    if (countArt != data.articlesNumber || countLikes != data.likesNumber || maxModifiedDate < data.maxModifiedDate 
 		                    	
 		                    ) {
 		                        
@@ -125,9 +124,11 @@
 		                           		});
 		                           		
 		                           		$("#filter").val(filterVal).change();
+		                           		authorsNumber = data.authorsList.length;
 		                           	};
 		                        });
 		                        countArt = data.articlesNumber; countLikes = data.likesNumber; maxModifiedDate = data.maxModifiedDate;
+		                        
 		                       
 		                        
 		                    }
