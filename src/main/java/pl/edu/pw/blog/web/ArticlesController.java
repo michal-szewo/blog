@@ -251,18 +251,27 @@ public class ArticlesController{
 		}
 		
 		Article modifiedArticle = articleRepo.findById(id).get();
+		model.addAttribute("mArticle",modifiedArticle);
 		if (errors.hasErrors()) {
-			redirectAttributes.addFlashAttribute("errorMessage","Nie udało się zmodyfikować artykułu:");
-			redirectAttributes.addFlashAttribute("errors",errors.getAllErrors());
+			/*
+			 * redirectAttributes.addFlashAttribute(
+			 * "errorMessage","Nie udało się zmodyfikować artykułu:");
+			 * redirectAttributes.addFlashAttribute("errors",errors.getAllErrors());
+			 */
+			model.addAttribute("errorMessage","Nie udało się zmodyfikować artykułu:");
 			
-			return "redirect:/articles/edit/"+modifiedArticle.getId();
+			model.addAttribute("errors",errors.getAllErrors());
+			
+			
+			//return "redirect:/articles/edit/"+modifiedArticle.getId();
+			return "edit";
 		  }
 
 			
 			modifiedArticle.setTitle(article.getTitle());
 			modifiedArticle.setBody(article.getBody());
 			articleRepo.save(modifiedArticle);
-			redirectAttributes.addFlashAttribute("message","Artykuł zapisano.");
+			redirectAttributes.addFlashAttribute("message","Artykuł zmodyfikowano.");
 			return "redirect:/articles/edit/"+modifiedArticle.getId();
 			
 		
