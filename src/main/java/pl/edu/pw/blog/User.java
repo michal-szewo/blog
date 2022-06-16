@@ -31,7 +31,7 @@ import lombok.ToString;
 @Table(name="USERS")
 @Data
 @RequiredArgsConstructor
-@NoArgsConstructor(access=AccessLevel.PRIVATE,force=true)
+@NoArgsConstructor(access=AccessLevel.PROTECTED,force=true)
 public class User implements Comparable<User>, UserDetails{
 	
 	private static final long serialVersionUID = 1L;

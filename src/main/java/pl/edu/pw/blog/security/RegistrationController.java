@@ -18,6 +18,12 @@ import pl.edu.pw.blog.User;
 import pl.edu.pw.blog.data.UserRepository;
 
 
+/**
+ * Users' registration controller.
+ * 
+ * @author Michal
+ *
+ */
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {

@@ -6,6 +6,12 @@ import javax.validation.ConstraintValidatorContext;
 
 import pl.edu.pw.blog.security.RegistrationForm;
 
+/**
+ * Custom validator verifying whether the passwords typed by user during registration match.
+ * 
+ * @author Michal
+ *
+ */
 public class PasswordMatchValidator implements ConstraintValidator<PasswordMatches, RegistrationForm>{
 	@Override
     public void initialize(PasswordMatches p) {
