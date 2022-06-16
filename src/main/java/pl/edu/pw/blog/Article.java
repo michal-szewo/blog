@@ -59,7 +59,7 @@ public class Article implements Serializable{
 	
 	@NonNull
 	@NotBlank(message="Podanie treści jest obowiązkowe")
-	@Column(length=65000)
+	@Column(length=65000,nullable=false)
 	private String body;
 	
 	@ToString.Exclude

@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"pl.edu.pw.blog"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"pl.edu.pw.blog"},{"l":"pl.edu.pw.blog.data"},{"l":"pl.edu.pw.blog.security"},{"l":"pl.edu.pw.blog.security.validation"},{"l":"pl.edu.pw.blog.web"}];updateSearchResults();

@@ -7,6 +7,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import pl.edu.pw.blog.security.validation.PasswordMatches;
 
+/**
+ * Auxiliary class used for validation of input values typed by visitor attempting to sign up for the blog.
+ * 
+ * @author Michal
+ *
+ */
 @Data
 @PasswordMatches
 public class RegistrationForm {

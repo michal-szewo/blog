@@ -3,7 +3,6 @@ package pl.edu.pw.blog;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,27 +12,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
+
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.ResultMatcher;
 
-import net.bytebuddy.agent.VirtualMachine.ForHotSpot.Connection.Response;
-import pl.edu.pw.blog.data.ArticleRepository;
+
 import pl.edu.pw.blog.data.UserRepository;
-import pl.edu.pw.blog.security.RegistrationController;
 import pl.edu.pw.blog.security.UserService;
 import pl.edu.pw.blog.web.ArticlesController;
 
@@ -45,8 +41,7 @@ class BlogApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	@Autowired
-	private ArticleRepository artRepo;
+	
 	
 	@Autowired
 	private UserRepository userRepo;
@@ -57,12 +52,7 @@ class BlogApplicationTests {
 	@Autowired
 	private ArticlesController aController;
 	
-	@Autowired
-	private RegistrationController rController;
-	
-	
-	
-	
+
 	
 	
 	@Test
@@ -87,9 +77,10 @@ class BlogApplicationTests {
 	}
 	
 	@Test
+	@Sql(scripts = "/test-user-data.sql")
 	public void testSuccessfulLogin() throws Exception {
 		
-	    RequestBuilder requestBuilder = formLogin().user("m").password("m");
+	    RequestBuilder requestBuilder = formLogin().user("test").password("test1234");
 	    this.mockMvc.perform(requestBuilder).andExpect(redirectedUrl("/")).andExpect(status().isFound());
 	
 	}
@@ -148,12 +139,12 @@ class BlogApplicationTests {
 	
 	
 	@Test
-	@WithMockUser(username = "m", roles = "USER")
+	@WithMockUser(username = "test", roles = "USER")
 	public void whenAuthorizedUser_thenReturnArticlesTemplate() throws Exception {
 	
 		
 	    
-		MvcResult result = this.mockMvc.perform(get("/").sessionAttr("user", userRepo.findByUsername("m")))
+		MvcResult result = this.mockMvc.perform(get("/").sessionAttr("user", userRepo.findByUsername("test")))
 	        .andExpect(status().isOk())
 	        .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
 	        .andReturn();

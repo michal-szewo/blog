@@ -22,6 +22,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 
+/**
+ * Spring Security Configuration Class.
+ * 
+ * @author Michal
+ *
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
