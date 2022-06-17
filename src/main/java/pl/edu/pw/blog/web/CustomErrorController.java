@@ -9,6 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Customized Spring MVC Error Controller.
+ * 
+ * @author Michal
+ *
+ */
 @Controller
 public class CustomErrorController implements ErrorController  {
 
@@ -27,7 +33,7 @@ public class CustomErrorController implements ErrorController  {
 	        	errorMsg = "Ups! Coś poszło nie tak. Nie panikuj.";
 	        }
 	        else if(statusCode == HttpStatus.FORBIDDEN.value()) {
-	        	errorMsg = "Nie masz uprawnień do tego zasobu";
+	        	errorMsg = "Nie masz uprawnień do tego zasobu.";
 	        }
 	    }
 	    model.addAttribute("errorMsg",errorMsg);

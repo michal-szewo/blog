@@ -6,6 +6,12 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
+/**
+ *  Customization of the Java-based configuration for Spring MVC.
+ * 
+ * @author Michal
+ *
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 

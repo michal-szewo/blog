@@ -1,4 +1,4 @@
-package pl.edu.pw.blog.data;
+package pl.edu.pw.blog.web;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,12 @@ import java.util.List;
 import lombok.Data;
 import lombok.NonNull;
 
+/**
+ * Class providing options list for article.html page.
+ * 
+ * @author Michal
+ *
+ */
 @Data
 public class RefineResults {
 	

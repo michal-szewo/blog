@@ -33,6 +33,12 @@ import pl.edu.pw.blog.security.UserService;
 import pl.edu.pw.blog.web.ArticlesController;
 
 
+/**
+ * JUnit 5 and Spring testing. Mainly security issues (authorization, signing in, registration).
+ * 
+ * @author Michal
+ *
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class BlogApplicationTests {
