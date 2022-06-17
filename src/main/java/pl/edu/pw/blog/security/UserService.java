@@ -14,6 +14,12 @@ import pl.edu.pw.blog.User;
 import pl.edu.pw.blog.data.UserRepository;
 
 
+/**
+ * Auxiliary service methods for RegistrationController.
+ * 
+ * @author Michal
+ *
+ */
 @Service
 @Transactional
 public class UserService 
@@ -40,7 +46,6 @@ private UserRepository userRepo;
     throw new UsernameNotFoundException(
                     "Użytkownik '" + username + "' nie został znaleziony.");
   }
-  
   
 
   public boolean userExists(String username) {

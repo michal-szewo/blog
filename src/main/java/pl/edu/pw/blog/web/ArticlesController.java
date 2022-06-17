@@ -36,7 +36,6 @@ import pl.edu.pw.blog.AjaxDBChange;
 import pl.edu.pw.blog.Article;
 import pl.edu.pw.blog.User;
 import pl.edu.pw.blog.data.ArticleRepository;
-import pl.edu.pw.blog.data.RefineResults;
 import pl.edu.pw.blog.data.UserRepository;
 
 /**
@@ -242,7 +241,7 @@ public class ArticlesController{
 			) {
 
 		if (errors.hasErrors()) {
-			 redirectAttributes.addFlashAttribute("errorMessage","Nie udało się dodać artykułu");
+			 redirectAttributes.addFlashAttribute("errorMessage","Nie udało się dodać artykułu:");
 			 redirectAttributes.addFlashAttribute("errors",errors.getAllErrors()); 
 			 redirectAttributes.addFlashAttribute("newArticle",article);
 			return "redirect:/";

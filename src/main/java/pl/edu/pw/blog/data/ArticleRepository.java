@@ -11,6 +11,13 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import pl.edu.pw.blog.Article;
 
 
+/**
+ * Repository bean providing sophisticated CRUD functionality for managing Article entities. PagingAndSortingRepository interface makes it possible to
+ * retrieve entities using the sorting abstraction.
+ * 
+ * @author Michal
+ *
+ */
 public interface ArticleRepository extends PagingAndSortingRepository<Article, Long> {
 
 	  Article findByTitle(String title);

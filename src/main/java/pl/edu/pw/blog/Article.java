@@ -32,6 +32,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+/**
+ * A JPA entity class having the ability to represent Articles' objects in the database.
+ * 
+ * @author Michal
+ *
+ */
 @Data
 @Entity
 @Table(name="ARTICLES")

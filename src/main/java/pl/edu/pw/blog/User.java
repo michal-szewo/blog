@@ -27,6 +27,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+/**
+ * A JPA entity class having the ability to represent Users' objects in the database.
+ * 
+ * @author Michal
+ *
+ */
 @Entity
 @Table(name="USERS")
 @Data

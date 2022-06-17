@@ -8,6 +8,12 @@ import org.springframework.data.repository.CrudRepository;
 
 import pl.edu.pw.blog.User;
 
+/**
+ * Repository bean providing sophisticated CRUD functionality for managing User entities.
+ * 
+ * @author Michal
+ *
+ */
 public interface UserRepository extends CrudRepository<User, Long> {
 
 	  User findByUsername(Optional<String> name);

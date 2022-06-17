@@ -11,6 +11,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+/**
+ * Custom Bean validation annotation which logic relies on PasswordMatchValidator class.
+ * It is designed to be used in {@link pl.edu.pw.blog.security.RegistrationForm RegistrationForm} class in order to verify whether the passwords typed by user during registration match.
+ * 
+ * @author Michal
+ *
+ */
 @Target({TYPE,ANNOTATION_TYPE})
 @Retention(RUNTIME)
 @Constraint(validatedBy=PasswordMatchValidator.class)
