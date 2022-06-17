@@ -54,21 +54,21 @@ public class RegistrationController {
   public String processRegistration(@ModelAttribute("form") @Valid RegistrationForm form, Errors errors, Model model) {
 	  log.info("PROCESSING REGISTRATION");
 	  if (errors.hasErrors()) {
-		  
+		  log.info("Rejestracja zawiodła z powodu błędów w formularzu.");
 		  return "register";
 	  }
 	  try { 
 		    
 		    if(userService.userExists(form.getUsername())) {
-		    	log.info("User exists");
+		    	log.info("Rejestracja zawiodła - użytkownik już istnieje.");
 		    	model.addAttribute("message", "Konto dla podanego loginu już istnieje");
 		    	return "register";
 		    };
 		    User registered = userRepo.save(form.toUser(passwordEncoder));
-		    log.info("SUCCESSFUL registration of " + registered.getUsername());
+		    log.info("Udana rejestracja użytkownika " + registered.getUsername());
 	    } catch (Exception e) {
 	    	log.info(e.getMessage());
-	        model.addAttribute("message", "Failure of input");
+	        model.addAttribute("message", "Błędne dane.");
 	        return "register";
 	    } 
 	  
