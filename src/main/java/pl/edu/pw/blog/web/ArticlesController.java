@@ -68,13 +68,13 @@ public class ArticlesController{
 	ServletContext context;
 	
 	/**
-	 * Injecting UserRepository bean into controller.
+	 * Injecting UserRepository bean into the controller.
 	 */
 	@Autowired
 	UserRepository userRepo;
 	
 	/**
-	 * Injecting ArticleRepository bean into controller.
+	 * Injecting ArticleRepository bean into the controller.
 	 */
 	@Autowired
 	ArticleRepository articleRepo;
