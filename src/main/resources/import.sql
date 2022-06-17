@@ -1,1 +1,2 @@
 insert into users (id,username,fullname,password) values (1,'m','m','$2a$10$/GmNKy8Mm323RRSk1/mqHOmYUsJZsvJahVxb5XNeAo.Pq5EZchUna');
+insert into users (id,username,fullname,password) values (2,'t','t','$2a$10$/GmNKy8Mm323RRSk1/mqHOmYUsJZsvJahVxb5XNeAo.Pq5EZchUna');
