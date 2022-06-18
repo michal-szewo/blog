@@ -265,16 +265,16 @@ public class ArticlesController{
 	 */
 	@PostMapping(value = "/articles/delete/{id}")
 	public String deleteArticle(@PathVariable Long id, Model model,RedirectAttributes redirectAttributes) {
-		String message;
+		
 		
 		if (isAuthor((User) model.getAttribute("user"),id)){
 			articleRepo.deleteById(id);
-			message = "Usunięto artykuł o id: ";
+			redirectAttributes.addFlashAttribute("message","Usunięto artykuł o id: " + id);
 		} else {
-			message = "Nie jesteś autorem artykułu o id: ";
+			redirectAttributes.addFlashAttribute("errorMessage","Nie jesteś autorem artykułu o id: " + id);
 			}
 		
-		redirectAttributes.addFlashAttribute("message",message + id);
+		
 		return "redirect:/";
 	}
 	
@@ -302,7 +302,7 @@ public class ArticlesController{
 			return "edit";
 		} else {
 			
-			redirectAttributes.addFlashAttribute("message","Nie masz uprawnień do edycji artykułu id: " + id);
+			redirectAttributes.addFlashAttribute("errorMessage","Nie masz uprawnień do edycji artykułu id: " + id);
 			return "redirect:/";
 			
 			}
@@ -327,7 +327,7 @@ public class ArticlesController{
 	public String modifyArticle(@ModelAttribute("article") @Valid Article article, BindingResult errors, @PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
 		
 		if (!isAuthor((User) model.getAttribute("user"),id)){
-			redirectAttributes.addFlashAttribute("message","Nie masz uprawnień do edycji artykułu id: " + id);
+			redirectAttributes.addFlashAttribute("errorMessage","Nie masz uprawnień do edycji artykułu id: " + id);
 			return "redirect:/";
 		}
 		
