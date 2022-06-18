@@ -10,9 +10,9 @@
 <!-- author: Michał Szeworski -->
 <body class="container m-auto p-3 rounded">
    
-     <header class="py-5 bg-dark bg-gradient rounded text-white text-center d-flex align-items-center position-relative">
+     <header class="py-5 bg-dark bg-gradient rounded text-white d-flex align-items-center position-relative">
        <div class="position-absolute top-0 end-0 p-2">Zalogowany: <span th:text="${user.username}">User</span></div>
-      <div class="col-lg-2 mx-2"><i class="material-icons" style="font-size:68px;color:white">import_contacts</i></div>
+      <div class="col-lg-2 mx-2 text-center"><i class="material-icons" style="font-size:68px;color:white">import_contacts</i></div>
       <div class="col-lg-10 d-flex justify-content-start mx-2"><h1>Blog - edycja artykułu <span th:text="${article.id}"></span></h1></div>
       <nav class="position-absolute bottom-0 end-0 d-flex align-items-center">
       <a th:href="@{/}" class="btn text-white d-flex align-items-center" >Powrót do strony głównej</a> | 

@@ -44,7 +44,7 @@
 					</form>
 	            </div>
                 
-                <h2 class="blog-post-title card-title px-3 pt-3 w-75" th:text="${article.title}">Title</h2>
+                <h2 class="blog-post-title card-title px-3 pt-5 w-75" th:text="${article.title}">Title</h2>
                 <p class="blog-post-meta text-muted ps-3 fs-6">
                 	<span th:text="'Utworzony: ' + ${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')}"></span><br>
                 	<span th:text="'Autor: ' + ${article.author.username}"></span>
