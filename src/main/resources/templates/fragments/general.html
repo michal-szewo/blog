@@ -20,7 +20,7 @@
 			 	<i class="material-icons d-block display-5">done</i>
 			 	<p class="m-0 p-0" th:text="${message}"></p>
 		 	</div>
-			<div th:if="${errors}" class="m-3 p-3 text-danger text-center fs-5">
+			<div th:if="${errors !=null || errorMessage !=null}" class="m-3 p-3 text-danger text-center fs-5">
 				<i class="material-icons d-block display-5">error</i>
 				<p class="p-0 mx-auto my-0" th:text="${errorMessage}">error</p>
 				    <ul class="d-inline-block">

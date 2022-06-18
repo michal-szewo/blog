@@ -4,13 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
@@ -74,7 +75,7 @@ class BlogApplicationTests {
 	}
 	
 	@Test
-	public void whenUnauthorizedAccessesDirectlyLoginPage_thenReturnLoginPage() throws Exception{
+	public void whenUnauthorizedUserAccessesDirectlyLoginPage_thenReturnLoginPage() throws Exception{
 		this.mockMvc.perform(get("/login"))
 		.andExpect(status().isOk())
 		.andExpect(view().name("login"));
@@ -87,7 +88,19 @@ class BlogApplicationTests {
 		
 	    RequestBuilder requestBuilder = formLogin().user("test").password("test1234");
 	    this.mockMvc.perform(requestBuilder).andExpect(redirectedUrl("/")).andExpect(status().isFound());
+	    
+	    
+	}
 	
+	@Test
+	public void whenNotAuthor_thenCannotDeleteArticle() throws Exception {
+		
+		User testUser = (User) userService.loadUserByUsername("m");
+		
+		this.mockMvc.perform(post("/articles/delete/33333333333").with(user(testUser)).with(csrf()))
+		.andExpect(flash().attributeExists("errorMessage"));
+		
+	    		
 	}
 	
 	@Test
@@ -102,7 +115,7 @@ class BlogApplicationTests {
 				.with(csrf()))
 				.andExpect(model().hasErrors())
 				.andReturn();
-				;
+				
 				
 		String content = result.getResponse().getContentAsString();
 	    assertNotNull(content);
@@ -136,7 +149,7 @@ class BlogApplicationTests {
 	@Test
 	public void testFailedLogin() throws Exception {
 		
-	    RequestBuilder requestBuilder = formLogin().user("").password("");
+	    RequestBuilder requestBuilder = formLogin().user("invalid").password("invalid333");
 	    this.mockMvc.perform(requestBuilder).andExpect(redirectedUrl("/login?error=true")).andExpect(status().isFound());
 	
 	}
@@ -174,9 +187,9 @@ class BlogApplicationTests {
 	
 	@Test
 	@WithMockUser(username = "m", roles = "USER")
-	public void sendJsonDBChanges_whenUserIsAuthorized() throws Exception {
+	public void whenUserIsAuthorized_sendJsonDBChanges() throws Exception {
 	    
-		this.mockMvc.perform(get("/dbChanges")).andDo(print())
+		this.mockMvc.perform(get("/dbChanges"))
 	      .andExpect(status().isOk())
 	      .andExpect(content()
 	      .contentType("application/json"));
@@ -186,7 +199,7 @@ class BlogApplicationTests {
 	
 	@Test
 	
-	public void dontSendJsonDBChanges_whenUserIsUnAuthorized() throws Exception {
+	public void whenUserIsUnauthorized_dontSendJsonDBChanges() throws Exception {
 	    
 		this.mockMvc.perform(get("/dbChanges"))
 	      .andExpect(status().is3xxRedirection());

@@ -44,7 +44,7 @@ protected void configure(HttpSecurity http) throws Exception {
   .authorizeRequests()
   			
 
-			.antMatchers("/register","/login/**").access("permitAll")
+			.antMatchers("/h2-console/**","/register","/login/**").access("permitAll")
 			.antMatchers("/**").access("hasRole('ROLE_USER')")
 			
 	.and()
