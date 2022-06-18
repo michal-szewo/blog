@@ -178,7 +178,7 @@ public class ArticlesController{
 			
 			
 			
-			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
+			model.addAttribute("maxModifiedDate",!articleRepo.findMaxModifiedDate().isPresent() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
 		
 			return "articles";
 	}
@@ -216,7 +216,7 @@ public class ArticlesController{
 			}
 			
 			
-			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
+			model.addAttribute("maxModifiedDate",!articleRepo.findMaxModifiedDate().isPresent() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
 			
 			model.addAttribute("authorsList",userRepo.findAllAuthors());
 		
@@ -429,7 +429,7 @@ public class ArticlesController{
 		for (Article article : articles) {
 			countLikes += article.likeCount();
 		}
-		Long maxModifiedAt = articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime();
+		Long maxModifiedAt = !articleRepo.findMaxModifiedDate().isPresent() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime();
 		
 		
 		return new AjaxDBChange(articleRepo.count(), countLikes, maxModifiedAt, authorsNamesList);
