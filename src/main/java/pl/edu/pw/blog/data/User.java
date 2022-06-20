@@ -1,4 +1,4 @@
-package pl.edu.pw.blog;
+package pl.edu.pw.blog.data;
 
 
 import java.util.Arrays;
@@ -43,7 +43,7 @@ public class User implements Comparable<User>, UserDetails{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@NonNull

@@ -8,8 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import pl.edu.pw.blog.Article;
-
 
 /**
  * Repository bean providing sophisticated CRUD functionality for managing Article entities. PagingAndSortingRepository interface makes it possible to

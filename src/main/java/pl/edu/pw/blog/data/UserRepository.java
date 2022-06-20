@@ -6,8 +6,6 @@ import java.util.Set;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import pl.edu.pw.blog.User;
-
 /**
  * Repository bean providing sophisticated CRUD functionality for managing User entities.
  * 
