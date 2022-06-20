@@ -31,11 +31,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-import pl.edu.pw.blog.AjaxDBChange;
-import pl.edu.pw.blog.Article;
-import pl.edu.pw.blog.User;
+import pl.edu.pw.blog.data.AjaxDBChange;
+import pl.edu.pw.blog.data.Article;
 import pl.edu.pw.blog.data.ArticleRepository;
+import pl.edu.pw.blog.data.User;
 import pl.edu.pw.blog.data.UserRepository;
 
 /**
@@ -412,7 +411,7 @@ public class ArticlesController{
 	/**
 	 * Rest method used in conjunction with {@link #refreshArticles(Model, HttpSession) refreshArticles()} method to detect changes in the database and dynamically reload fragment of articles page, if a change occurs.
 	 * 
-	 * @return {@link pl.edu.pw.blog.AjaxDBChange AjaxDBChange} object containing refreshed sizes of articles and likes table along with the newest modificationAt date and refreshed authors names list.  
+	 * @return {@link pl.edu.pw.blog.data.AjaxDBChange AjaxDBChange} object containing refreshed sizes of articles and likes table along with the newest modificationAt date and refreshed authors names list.  
 	 * 
 	 * @author Michal
 	 */

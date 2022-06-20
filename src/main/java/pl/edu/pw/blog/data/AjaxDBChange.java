@@ -1,4 +1,4 @@
-package pl.edu.pw.blog;
+package pl.edu.pw.blog.data;
 
 
 import java.util.List;

@@ -28,10 +28,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 
-
+import pl.edu.pw.blog.data.User;
 import pl.edu.pw.blog.data.UserRepository;
+import pl.edu.pw.blog.security.RegistrationController;
 import pl.edu.pw.blog.security.UserService;
-import pl.edu.pw.blog.web.ArticlesController;
 
 
 /**
@@ -48,7 +48,6 @@ class BlogApplicationTests {
 	private MockMvc mockMvc;
 	
 	
-	
 	@Autowired
 	private UserRepository userRepo;
 	
@@ -56,18 +55,32 @@ class BlogApplicationTests {
 	private UserService userService;
 	
 	@Autowired
-	private ArticlesController aController;
+	private RegistrationController rController;
 	
 
 	
 	
+	//RegistrationController and UserService tests
 	@Test
 	public void contextLoads() throws Exception {
-		assertThat(aController).isNotNull();
+		assertThat(rController).isNotNull();
 	}
 	
+	
+	
 	@Test
-	public void whenUnauthorized_ThenRedirectToLoginPage() throws Exception{
+	public void whenValidName_thenUserShouldBeFound() {
+	    String name = "m";
+	    User found = (User) userService.loadUserByUsername(name);
+	 
+	     assertThat(found.getUsername())
+	      .isEqualTo(name);
+	 }
+	
+	
+	//Unauthorized users
+	@Test
+	public void whenUnauthorizedUser_ThenRedirectToLoginPage() throws Exception{
 		this.mockMvc.perform(get("/"))
 		.andExpect(status().is(302))
 		;
@@ -83,26 +96,16 @@ class BlogApplicationTests {
 	}
 	
 	@Test
-	@Sql(scripts = "/test-user-data.sql")
-	public void testSuccessfulLogin() throws Exception {
-		
-	    RequestBuilder requestBuilder = formLogin().user("test").password("test1234");
-	    this.mockMvc.perform(requestBuilder).andExpect(redirectedUrl("/")).andExpect(status().isFound());
+	public void whenUserIsUnauthorized_dontSendJsonDBChanges() throws Exception {
 	    
-	    
+		this.mockMvc.perform(get("/dbChanges"))
+	      .andExpect(status().is3xxRedirection());
+	      
+	      
 	}
 	
-	@Test
-	public void whenNotAuthor_thenCannotDeleteArticle() throws Exception {
-		
-		User testUser = (User) userService.loadUserByUsername("m");
-		
-		this.mockMvc.perform(post("/articles/delete/33333333333").with(user(testUser)).with(csrf()))
-		.andExpect(flash().attributeExists("errorMessage"));
-		
-	    		
-	}
 	
+	// Registration
 	@Test
 	public void passwordsDontMatch() throws Exception{
 		
@@ -143,8 +146,36 @@ class BlogApplicationTests {
 	    assertTrue(content.contains("Hasło powinno liczyć przynajmniej 8 znaków"));
 		
 		
-	}	
+	}
 	
+	
+	@Test
+	public void successfulRegistration() throws Exception{
+		
+				
+		this.mockMvc.perform(post("/register")
+				.param("username", "nowy_testowy")
+				.param("fullname", "nowy_testowy")
+				.param("password", "nowy_testowy")
+				.param("matchingPassword", "nowy_testowy")
+				.with(csrf()))
+				.andExpect(redirectedUrl("/login")).andExpect(status().is(302))
+				;
+		
+		
+		
+	}
+	
+	//Signing-in
+	@Test
+	@Sql(scripts = "/test-user-data.sql")
+	public void testSuccessfulLogin() throws Exception {
+		
+	    RequestBuilder requestBuilder = formLogin().user("test").password("test1234");
+	    this.mockMvc.perform(requestBuilder).andExpect(redirectedUrl("/")).andExpect(status().isFound());
+	    
+	    
+	}
 	
 	@Test
 	public void testFailedLogin() throws Exception {
@@ -155,6 +186,7 @@ class BlogApplicationTests {
 	}
 	
 	
+	//After succesfull signing in 
 	
 	@Test
 	@WithMockUser(username = "test", roles = "USER")
@@ -172,17 +204,17 @@ class BlogApplicationTests {
 	    assertTrue(content.contains("Zalogowany:"));
 	}
 	
-	
-	
-	
 	@Test
-	public void whenValidName_thenUserShouldBeFound() {
-	    String name = "m";
-	    User found = (User) userService.loadUserByUsername(name);
-	 
-	     assertThat(found.getUsername())
-	      .isEqualTo(name);
-	 }
+	public void whenNotAuthor_thenCannotDeleteArticle() throws Exception {
+		
+		User testUser = (User) userService.loadUserByUsername("m");
+		
+		this.mockMvc.perform(post("/articles/delete/33333333333").with(user(testUser)).with(csrf()))
+		.andExpect(flash().attributeExists("errorMessage"));
+		
+	    		
+	}
+		
 	
 	
 	@Test
@@ -195,18 +227,6 @@ class BlogApplicationTests {
 	      .contentType("application/json"));
 	      
 	}
-	
-	
-	@Test
-	
-	public void whenUserIsUnauthorized_dontSendJsonDBChanges() throws Exception {
-	    
-		this.mockMvc.perform(get("/dbChanges"))
-	      .andExpect(status().is3xxRedirection());
-	      
-	      
-	}
-	
 	
 	
 	
