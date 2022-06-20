@@ -2,9 +2,11 @@ package pl.edu.pw.blog.security;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import lombok.Data;
-import pl.edu.pw.blog.User;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import pl.edu.pw.blog.data.User;
 import pl.edu.pw.blog.security.validation.PasswordMatches;
 
 /**

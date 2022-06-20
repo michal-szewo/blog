@@ -1,4 +1,4 @@
-package pl.edu.pw.blog;
+package pl.edu.pw.blog.data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -50,7 +50,7 @@ public class Article implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@NonNull
