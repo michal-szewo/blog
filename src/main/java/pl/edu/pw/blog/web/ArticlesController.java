@@ -34,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pl.edu.pw.blog.AjaxDBChange;
 import pl.edu.pw.blog.Article;
+import pl.edu.pw.blog.Comments;
 import pl.edu.pw.blog.User;
 import pl.edu.pw.blog.data.ArticleRepository;
 import pl.edu.pw.blog.data.UserRepository;
@@ -112,6 +113,7 @@ public class ArticlesController{
 			@RequestParam(name="authorFilter") Optional<String> authorFilter,
 			@ModelAttribute(name="newArticle") Article article,
 			@ModelAttribute(name="refine") RefineResults refine,
+			@ModelAttribute(name="newComment") Comments comment,
 			Model model, HttpSession session){
 		
 			

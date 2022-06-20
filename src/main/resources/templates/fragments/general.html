@@ -82,7 +82,34 @@
 		    			
 					</div>
 					</div>
-                </div>
+
+
+					<div class="card-footer d-flex justify-content-end align-items-center">
+						<div th:if="${article.comments != null || article.comments.size != 0}">
+							<div th:each="comment: ${article.comments}">
+								<p th:text="comment.author">Autor</p>
+								<div th:text="comment.body">Treść</div>
+							</div>
+						</div>
+						<form th:action="@{/addComments}" th:object="${newComment}" class="col-lg-6 mx-auto p-3" method="post" id="addForm">
+
+							<div class="mb-3">s
+								<label for="postBody" class="form-label">Treść komentarza:</label>
+								<textarea id="postBody" th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea>
+							</div>
+							<input type="hidden" th:field="*{user}" th:value="${article.id}">
+							<input type="hidden" th:field="*{article}" th:value="${user.id}">
+							<div>
+								<button type="submit" class="btn btn-md btn-primary d-flex mt-3 align-items-center"><i class="material-icons">add</i>&nbsp;Dodaj komentarz</button>
+							</div>
+
+						</form>
+
+
+					</div>
+
+
+				</div>
               </article>
               
          </div>

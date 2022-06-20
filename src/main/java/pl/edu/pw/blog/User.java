@@ -1,20 +1,9 @@
 package pl.edu.pw.blog;
 
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.
@@ -65,7 +54,10 @@ public class User implements Comparable<User>, UserDetails{
 	@ToString.Exclude
 	@ManyToMany(mappedBy = "likers",fetch=FetchType.EAGER)
 	private Set<Article> likedArticles = new HashSet<>();
-	
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	private List<Comments> comments = new ArrayList<>();
+
 	
 	
 	@Override

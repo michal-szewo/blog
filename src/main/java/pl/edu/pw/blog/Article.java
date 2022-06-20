@@ -1,26 +1,9 @@
 package pl.edu.pw.blog;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 
@@ -46,7 +29,9 @@ import lombok.ToString;
 public class Article implements Serializable{
 	
 	
-	
+
+	// ------------ Parametry do Article----------------//
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -67,7 +52,13 @@ public class Article implements Serializable{
 	@NotBlank(message="Podanie treści jest obowiązkowe")
 	@Column(length=65000,nullable=false)
 	private String body;
-	
+
+
+	// ------------ Parametry do Article----------------//
+
+
+
+
 	@ToString.Exclude
 	@ManyToMany(fetch=FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable( name="LIKES",
@@ -75,7 +66,18 @@ public class Article implements Serializable{
 	            inverseJoinColumns = @JoinColumn( name="user_id",unique=false)
 	        )
     private Set<User> likers = new TreeSet<>();
-	
+
+
+	// Z poziomu klasy Article łączymy sie do wielu klas Comments
+	// czyli tabela Article w Bazie Danych jest łączona do wielu komentarzy na swoj temat
+
+
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
+	private List<Comments> comments = new ArrayList<>();
+
+
+
 	@ToString.Exclude
 	@NonNull
 	@ManyToOne(fetch=FetchType.EAGER)
