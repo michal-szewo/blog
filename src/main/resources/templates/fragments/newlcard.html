@@ -7,8 +7,8 @@
 <body>
 <div th:fragment="lcard">
        
-  <div class="card-footer d-flex justify-content-end align-items-center">
-                
+  <div class="card-footer d-flex justify-content-end align-items-center" style="position:relative">
+                <button class="btn btn-white d-flex align-content-center" style="position:absolute;left:0" type="button" data-bs-toggle="collapse" th:attr="data-bs-target='#commentCard' + ${article.id}" aria-expanded="false"><i class="material-icons">comment</i>&nbsp;Komentarze</button>
   <div class="dropdown">
                 	<button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" th:text="'Polubień: ' + ${article.likeCount()}">Likes count
                 	</button>

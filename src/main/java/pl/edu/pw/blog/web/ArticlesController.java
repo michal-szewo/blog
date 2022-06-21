@@ -90,7 +90,10 @@ public class ArticlesController{
 		return user;
 	}
 	
-	
+	@ModelAttribute("newComment")
+	public Comments readComments() {
+		return new Comments();
+	}
 	
 	
 	/**
@@ -112,7 +115,6 @@ public class ArticlesController{
 			@RequestParam(name="authorFilter") Optional<String> authorFilter,
 			@ModelAttribute(name="newArticle") Article article,
 			@ModelAttribute(name="refine") RefineResults refine,
-			@ModelAttribute(name="newComment") Comments comment,
 			Model model, HttpSession session){
 		
 			

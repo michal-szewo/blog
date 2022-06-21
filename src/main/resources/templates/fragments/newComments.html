@@ -8,7 +8,7 @@
 <div th:fragment="commentCard">
 
 
-    <div class="card-footer d-flex justify-content-end align-items-center">
+    <div class="card-footer d-flex">
         <div th:if="${article.comments != null || article.comments.size != 0}">
             <div th:each="comment: ${article.comments}">
                 <p th:text="comment.author">Autor</p>
@@ -17,7 +17,7 @@
         </div>
         <form th:action="@{/addComments}" th:object="${newComment}" class="col-lg-6 mx-auto p-3" method="post" id="addForm">
 
-            <div class="mb-3">s
+            <div class="mb-3">
                 <label for="postBody" class="form-label">Treść komentarza:</label>
                 <textarea id="postBody" th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea>
             </div>

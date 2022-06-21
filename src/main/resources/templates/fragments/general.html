@@ -54,8 +54,9 @@
                 <div class="card-text p-3" th:utext="${article.body}">Body</div>
                 
                 <div th:id="'lcard' + ${article.id}" class="m-0 p-0">
-                <div class="card-footer d-flex justify-content-end align-items-center">
-                
+                <div class="card-footer d-flex justify-content-end align-items-center"  style="position:relative">
+                <button class="btn btn-white d-flex align-content-center" style="position:absolute;left:0" type="button" data-bs-toggle="collapse" th:attr="data-bs-target='#commentCard' + ${article.id}" aria-expanded="false"><i class="material-icons">comment</i>&nbsp;Komentarze</button>
+		    			
                 <div class="dropdown">
                 	<button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" th:text="'Polubień: ' + ${article.likeCount()}">Likes count
                 	</button>
@@ -69,7 +70,6 @@
                 <div class="btn btn-white d-flex align-items-center">
 		    			
 		    			
-		    			<!-- <input type="hidden" th:value="${article.isLikedByUser(user)}" th:attr="name='isLiked'"/> -->
 		    			
 		    				<button th:if="${!article.isLikedByUser(user)}" th:attr="onclick=|updateLikes('${article.id}',${article.isLikedByUser(user)})|" class="btn btn-success d-flex align-items-center">
 		    									
@@ -83,19 +83,24 @@
 		    				</button>
 		    			
 					</div>
+					 
 					</div>
 
 
-					<div class="card-footer d-flex justify-content-end align-items-center">
+					
+				</div>
+				
+				 <div th:id="'commentCard' + ${article.id}" class="m-0 p-0 collapse">
+					<div class="card-footer d-flex">
 						<div th:if="${article.comments != null || article.comments.size != 0}">
 							<div th:each="comment: ${article.comments}">
 								<p th:text="comment.author">Autor</p>
 								<div th:text="comment.body">Treść</div>
 							</div>
 						</div>
-						<form th:action="@{/addComments}" th:object="${newComment}" class="col-lg-6 mx-auto p-3" method="post" id="addForm">
+						<form th:action="@{/addComments}" th:object="${newComment}" class="col-lg-6 p-3" method="post" id="addForm">
 
-							<div class="mb-3">s
+							<div class="mb-3">
 								<label for="postBody" class="form-label">Treść komentarza:</label>
 								<textarea id="postBody" th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea>
 							</div>
@@ -109,8 +114,7 @@
 
 
 					</div>
-
-
+				
 				</div>
               </article>
               
