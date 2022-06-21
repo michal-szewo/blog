@@ -220,7 +220,7 @@ class BlogApplicationTests {
 		
 		User testUser = (User) userService.loadUserByUsername("m");
 		
-		this.mockMvc.perform(post("/articles/delete/33333333333").with(user(testUser)).with(csrf()))
+		this.mockMvc.perform(post("/articles/delete/1").with(user(testUser)).with(csrf()))
 		.andExpect(flash().attributeExists("errorMessage"));
 		
 	    		
