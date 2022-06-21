@@ -42,9 +42,7 @@ private UserDetailsService userDetailsService;
 protected void configure(HttpSecurity http) throws Exception {
   http
   .authorizeRequests()
-  			
-
-			.antMatchers("/register","/login/**").access("permitAll")
+			.antMatchers("/h2-console/**","/register","/login/**","/custom.css").access("permitAll")
 			.antMatchers("/**").access("hasRole('ROLE_USER')")
 			
 	.and()
