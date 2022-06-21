@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pl.edu.pw.blog.data.Article;
 import pl.edu.pw.blog.data.ArticleRepository;
+import pl.edu.pw.blog.data.CommentRepository;
 import pl.edu.pw.blog.data.Comments;
 
 
@@ -48,6 +49,9 @@ public class CommentsController{
 	
 	@Autowired
 	private ArticleRepository artRepo;
+	
+	@Autowired
+	private CommentRepository commRepo;
 
 	Logger log = LoggerFactory.getLogger(ArticlesController.class);
 	
@@ -56,19 +60,22 @@ public class CommentsController{
                              Model model,
                              RedirectAttributes redirectAttributes
     ) {
-
-        
-    	Article commentedArticle = comment.getArticle(); 
-    	List<Comments> commentsList = commentedArticle.getComments();
+    		
+    	commRepo.save(comment);
     	
-    	commentsList.add(comment);
-    	
-    	artRepo.save(commentedArticle);
-    	
-    	model.addAttribute("article",commentedArticle);
-    	
-        log.warn("article: " + comment.getArticle());
-        log.warn("author: " + comment.getUser());
+		/*
+		 * Article commentedArticle = comment.getArticle(); List<Comments> commentsList
+		 * = commentedArticle.getComments();
+		 * 
+		 * commentsList.add(comment);
+		 * 
+		 * artRepo.save(commentedArticle);
+		 * 
+		 * model.addAttribute("article",commentedArticle);
+		 * 
+		 * log.warn("article: " + comment.getArticle()); log.warn("author: " +
+		 * comment.getUser());
+		 */
        
       return "redirect:/";
     }
