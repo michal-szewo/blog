@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head th:fragment="headerfiles">
+	
+  	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  	<link th:href="@{/custom.css}" rel="stylesheet">
+  	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  	<script th:src="@{/tinymce/tinymce.min.js}"  type="text/javascript" referrerpolicy="origin"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="author" content="Michał Szeworski">
+</head>
+<body>
+<div th:fragment="article_list">
+ 	<div th:fragment="articles_errors" class="m-0 p-0">
+		 	<div th:if="${message}" class="m-3 p-3r text-success text-center fs-5">
+			 	<i class="material-icons d-block display-5">done</i>
+			 	<p class="m-0 p-0" th:text="${message}"></p>
+		 	</div>
+			<div th:if="${errors !=null || errorMessage !=null}" class="m-3 p-3 text-danger text-center fs-5">
+				<i class="material-icons d-block display-5">error</i>
+				<p class="p-0 mx-auto my-0" th:if="${errorMessage}" th:text="${errorMessage}">error</p>
+				    <ul class="d-inline-block" th:if="${errors}">
+				        <li th:each="err : ${errors}" th:text="${err.getDefaultMessage()}" />
+				    </ul>
+			</div>
+ 	</div>
+ 	<h2 th:if="${articles == null || articles.size ==0}" class="m-3 p-3r text-center">Brak artykułów do wyświetlenia</h2>
+      		
+          
+          <div th:unless="${articles == null || articles.size ==0}">
+          
+            <article th:each="article : ${articles}" class="border my-4 shadow-sm rounded card position-relative">
+	            <div th:if="${article.author.id == user.id}" class="btn btn-white position-absolute top-0 end-0 d-flex align-items-center m-0 p-0">
+	            <a th:href="@{'/articles/edit/{id}'(id=${article.id})}" class="btn btn-white d-flex align-items-center"><i class="material-icons">mode_edit</i> Edytuj
+		    			</a>
+		           <form th:action="@{'/articles/delete/{id}'(id=${article.id})}" th:method="delete" class="btn btn-white d-flex align-items-center">
+		    			<button type="submit" class="btn align-items-center d-flex deleteBtn" th:attr="onclick=|if(!confirm('Czy jesteś pewien, że chcesz usunąć artykuł?')){event.preventDefault()}|">
+		        								<i class="material-icons">delete_forever</i> Usuń
+		    			</button>
+					</form>
+	            </div>
+                
+                <h2 class="blog-post-title card-title px-3 pt-5 w-75" th:text="${article.title}">Title</h2>
+                <p class="blog-post-meta text-muted ps-3 fs-6">
+                	<span th:text="'Utworzony: ' + ${#dates.format(article.publishedAt, 'dd-MM-yyyy HH:mm')}"></span><br>
+                	<span th:text="'Autor: ' + ${article.author.username}"></span>
+                </p>
+        		
+                <div class="card-text p-3" th:utext="${article.body}">Body</div>
+                
+                <div th:id="'lcard' + ${article.id}" class="m-0 p-0">
+                <div class="card-footer d-flex justify-content-end align-items-center">
+                
+                <div class="dropdown">
+                	<button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" th:text="'Polubień: ' + ${article.likeCount()}">Likes count
+                	</button>
+					    <ul th:if="${article.likeCount() > 0}" class="dropdown-menu px-3">
+					      <li th:each="liker : ${article.likers}"><span th:text="${liker.username}"></span></li>
+						    
+					    </ul>
+                </div>
+                
+                
+                <div class="btn btn-white d-flex align-items-center">
+		    			
+		    			
+		    			<!-- <input type="hidden" th:value="${article.isLikedByUser(user)}" th:attr="name='isLiked'"/> -->
+		    			
+		    				<button th:if="${!article.isLikedByUser(user)}" th:attr="onclick=|updateLikes('${article.id}',${article.isLikedByUser(user)})|" class="btn btn-success d-flex align-items-center">
+		    									
+		        								<i class="material-icons">thumb_up</i>&nbsp;Polub
+		        								
+		    				</button>
+		    				<button th:unless="${!article.isLikedByUser(user)}" th:attr="onclick=|updateLikes('${article.id}',${article.isLikedByUser(user)})|" class="btn btn-danger d-flex align-items-center">
+		    									
+		        								<i class="material-icons">thumb_down</i>&nbsp;Cofnij polubienie
+		        								
+		    				</button>
+		    			
+					</div>
+					</div>
+                </div>
+              </article>
+              
+         </div>
+    
+</div>
+
+<footer th:fragment="footer" class="my-5 mx-3">
+    <a href="#" id="back-to-top" title="Back to top"><i class="material-icons">arrow_upward</i></a>
+        
+    <p>&copy; Viaceslav Pavlovskij, Michał Szeworski</p>
+    
+  	<script type="text/javascript">
+  	$(document).ready(function () {
+  	
+  	if ($('#back-to-top').length) {
+  	    var scrollTrigger = 100,
+  	        backToTop = function () {
+  	            var scrollTop = $(window).scrollTop();
+  	            if (scrollTop > scrollTrigger) {
+  	                $('#back-to-top').addClass('show');
+  	            } else {
+  	                $('#back-to-top').removeClass('show');
+  	            }
+  	        };
+  	    backToTop();
+  	    $(window).on('scroll', function () {
+  	        backToTop();
+  	    });
+  	    $('#back-to-top').on('click', function (e) {
+  	        e.preventDefault();
+  	        $('html,body').animate({
+  	            scrollTop: 0
+  	        }, 700);
+  	    });
+  	}
+  	});
+	</script>    
+</footer>
+</body>
+</html>

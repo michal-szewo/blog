@@ -1,17 +1,10 @@
 package pl.edu.pw.blog.data;
 
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import pl.edu.pw.blog.Article;
-import pl.edu.pw.blog.Comments;
-import pl.edu.pw.blog.User;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import org.springframework.data.repository.CrudRepository;
+
+
+
 
 /**
  * Repository bean providing sophisticated CRUD functionality for managing Comments entities. CrudRepository interface makes it possible to

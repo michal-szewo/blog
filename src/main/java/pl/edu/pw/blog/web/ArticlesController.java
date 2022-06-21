@@ -31,12 +31,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-import pl.edu.pw.blog.AjaxDBChange;
-import pl.edu.pw.blog.Article;
-import pl.edu.pw.blog.Comments;
-import pl.edu.pw.blog.User;
+import pl.edu.pw.blog.data.AjaxDBChange;
+import pl.edu.pw.blog.data.Article;
 import pl.edu.pw.blog.data.ArticleRepository;
+import pl.edu.pw.blog.data.Comments;
+import pl.edu.pw.blog.data.User;
 import pl.edu.pw.blog.data.UserRepository;
 
 /**
@@ -69,13 +68,13 @@ public class ArticlesController{
 	ServletContext context;
 	
 	/**
-	 * Injecting UserRepository bean into controller.
+	 * Injecting UserRepository bean into the controller.
 	 */
 	@Autowired
 	UserRepository userRepo;
 	
 	/**
-	 * Injecting ArticleRepository bean into controller.
+	 * Injecting ArticleRepository bean into the controller.
 	 */
 	@Autowired
 	ArticleRepository articleRepo;
@@ -180,7 +179,7 @@ public class ArticlesController{
 			
 			
 			
-			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
+			model.addAttribute("maxModifiedDate",!articleRepo.findMaxModifiedDate().isPresent() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
 		
 			return "articles";
 	}
@@ -218,7 +217,7 @@ public class ArticlesController{
 			}
 			
 			
-			model.addAttribute("maxModifiedDate",articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
+			model.addAttribute("maxModifiedDate",!articleRepo.findMaxModifiedDate().isPresent() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
 			
 			model.addAttribute("authorsList",userRepo.findAllAuthors());
 		
@@ -267,16 +266,16 @@ public class ArticlesController{
 	 */
 	@PostMapping(value = "/articles/delete/{id}")
 	public String deleteArticle(@PathVariable Long id, Model model,RedirectAttributes redirectAttributes) {
-		String message;
+		
 		
 		if (isAuthor((User) model.getAttribute("user"),id)){
 			articleRepo.deleteById(id);
-			message = "Usunięto artykuł o id: ";
+			redirectAttributes.addFlashAttribute("message","Usunięto artykuł o id: " + id);
 		} else {
-			message = "Nie jesteś autorem artykułu o id: ";
+			redirectAttributes.addFlashAttribute("errorMessage","Nie jesteś autorem artykułu o id: " + id);
 			}
 		
-		redirectAttributes.addFlashAttribute("message",message + id);
+		
 		return "redirect:/";
 	}
 	
@@ -304,7 +303,7 @@ public class ArticlesController{
 			return "edit";
 		} else {
 			
-			redirectAttributes.addFlashAttribute("message","Nie masz uprawnień do edycji artykułu id: " + id);
+			redirectAttributes.addFlashAttribute("errorMessage","Nie masz uprawnień do edycji artykułu id: " + id);
 			return "redirect:/";
 			
 			}
@@ -329,7 +328,7 @@ public class ArticlesController{
 	public String modifyArticle(@ModelAttribute("article") @Valid Article article, BindingResult errors, @PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
 		
 		if (!isAuthor((User) model.getAttribute("user"),id)){
-			redirectAttributes.addFlashAttribute("message","Nie masz uprawnień do edycji artykułu id: " + id);
+			redirectAttributes.addFlashAttribute("errorMessage","Nie masz uprawnień do edycji artykułu id: " + id);
 			return "redirect:/";
 		}
 		
@@ -414,7 +413,7 @@ public class ArticlesController{
 	/**
 	 * Rest method used in conjunction with {@link #refreshArticles(Model, HttpSession) refreshArticles()} method to detect changes in the database and dynamically reload fragment of articles page, if a change occurs.
 	 * 
-	 * @return {@link pl.edu.pw.blog.AjaxDBChange AjaxDBChange} object containing refreshed sizes of articles and likes table along with the newest modificationAt date and refreshed authors names list.  
+	 * @return {@link pl.edu.pw.blog.data.AjaxDBChange AjaxDBChange} object containing refreshed sizes of articles and likes table along with the newest modificationAt date and refreshed authors names list.  
 	 * 
 	 * @author Michal
 	 */
@@ -431,7 +430,7 @@ public class ArticlesController{
 		for (Article article : articles) {
 			countLikes += article.likeCount();
 		}
-		Long maxModifiedAt = articleRepo.findMaxModifiedDate().isEmpty() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime();
+		Long maxModifiedAt = !articleRepo.findMaxModifiedDate().isPresent() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime();
 		
 		
 		return new AjaxDBChange(articleRepo.count(), countLikes, maxModifiedAt, authorsNamesList);

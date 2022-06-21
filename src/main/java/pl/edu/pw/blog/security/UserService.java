@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pl.edu.pw.blog.User;
+import pl.edu.pw.blog.data.User;
 import pl.edu.pw.blog.data.UserRepository;
 
 
