@@ -15,7 +15,7 @@
                 <div th:text="comment.body">Treść</div>
             </div>
         </div>
-        <form th:action="@{/addComments}" th:object="${newComment}" class="col-lg-6 mx-auto p-3" method="post" id="addForm">
+        <form th:action="@{/addComment}" th:object="${newComment}" class="col-lg-6 mx-auto p-3" method="post" id="addForm">
 
             <div class="mb-3">
                 <label for="postBody" class="form-label">Treść komentarza:</label>
