@@ -60,14 +60,14 @@ class BlogApplicationTests {
 
 	
 	
-	//RegistrationController and UserService tests
+	// Test prawidłowego załadowania klasy RegistrationController
 	@Test
 	public void contextLoads() throws Exception {
 		assertThat(rController).isNotNull();
 	}
 	
 	
-	
+	// Test ładowania użytkownika po prawidłowej nazwie
 	@Test
 	public void whenValidName_thenUserShouldBeFound() {
 	    String name = "m";
@@ -78,7 +78,7 @@ class BlogApplicationTests {
 	 }
 	
 	
-	//Unauthorized users
+	// Niezalogowany użytkownik próbuje otworzyć stronę z listą artykułów - spodziewany rezultat: przekierowanie do strony logowania
 	@Test
 	public void whenUnauthorizedUser_ThenRedirectToLoginPage() throws Exception{
 		this.mockMvc.perform(get("/"))
@@ -87,6 +87,7 @@ class BlogApplicationTests {
 		
 	}
 	
+	// Niezalogowany użytkownik próbuje otworzyć stronę /login - spodziewany rezultat: status HTTP 200, nazwa widoku login
 	@Test
 	public void whenUnauthorizedUserAccessesDirectlyLoginPage_thenReturnLoginPage() throws Exception{
 		this.mockMvc.perform(get("/login"))
@@ -95,6 +96,9 @@ class BlogApplicationTests {
 		
 	}
 	
+	
+	// Niezalogowany użytkownik próbuje wywołać zastrzeżoną dla zalogowanych metodę get kontrolera ArticlesController zwracającą dane w formacie Json
+	// Spodziewany rezultat: przekierowanie (do strony logowania)
 	@Test
 	public void whenUserIsUnauthorized_dontSendJsonDBChanges() throws Exception {
 	    
@@ -105,7 +109,8 @@ class BlogApplicationTests {
 	}
 	
 	
-	// Registration
+	// Test rejestracji - podane hasła się nie zgadzają
+	// Spodziewany rezultat: błąd walidacji
 	@Test
 	public void passwordsDontMatch() throws Exception{
 		
@@ -126,6 +131,8 @@ class BlogApplicationTests {
 		
 	}
 	
+	// Test rejestracji - podane hasła są za krótkie
+	// Spodziewany rezultat: błąd walidacji
 	@Test
 	public void passwordIsTooShort() throws Exception{
 		
@@ -133,8 +140,8 @@ class BlogApplicationTests {
 		MvcResult result = this.mockMvc.perform(post("/register")
 				.param("username", "djasidjas")
 				.param("fullname", "atygsd8agsd")
-				.param("password", "m")
-				.param("matchingPassword", "m")
+				.param("password", "1234567")
+				.param("matchingPassword", "1234567")
 				.with(csrf()))
 				.andExpect(model().hasErrors())
 				.andExpect(model().attributeHasFieldErrors("form", "password"))
@@ -148,7 +155,7 @@ class BlogApplicationTests {
 		
 	}
 	
-	
+	//Udana resjestracja - spodziewane przekierowanie do strony logowania
 	@Test
 	public void successfulRegistration() throws Exception{
 		
@@ -166,7 +173,8 @@ class BlogApplicationTests {
 		
 	}
 	
-	//Signing-in
+	// Test udanego logowania po podaniu prawidłowych poświadczeń (poświadczenia załadowane uprzednio za pomocą pliku test-user-data.sql)
+	// Spodziewany rezultat: przekeirowanie do strony głównej
 	@Test
 	@Sql(scripts = "/test-user-data.sql")
 	public void testSuccessfulLogin() throws Exception {
@@ -177,6 +185,7 @@ class BlogApplicationTests {
 	    
 	}
 	
+	// Test nieudanego logowania - spodziewany rezultat: przekierowanie do strony /login?error=true
 	@Test
 	public void testFailedLogin() throws Exception {
 		
@@ -186,8 +195,7 @@ class BlogApplicationTests {
 	}
 	
 	
-	//After succesfull signing in 
-	
+	// Test poprawnego załadowania strony głównej, gdy użytkownik jest zalogowany
 	@Test
 	@WithMockUser(username = "test", roles = "USER")
 	public void whenAuthorizedUser_thenReturnArticlesTemplate() throws Exception {
@@ -204,6 +212,9 @@ class BlogApplicationTests {
 	    assertTrue(content.contains("Zalogowany:"));
 	}
 	
+	
+	// Sprawdzenie, czy użytkownik może usunąć cudzy artykuł
+	// Spodziewany rezultat: komunikat błędu
 	@Test
 	public void whenNotAuthor_thenCannotDeleteArticle() throws Exception {
 		
@@ -216,7 +227,8 @@ class BlogApplicationTests {
 	}
 		
 	
-	
+	// Sprawdzenie, czy zalogowany użytkownik może pobrać dane json
+	// Spodziewany rezultat: status HTTP 200
 	@Test
 	@WithMockUser(username = "m", roles = "USER")
 	public void whenUserIsAuthorized_sendJsonDBChanges() throws Exception {
