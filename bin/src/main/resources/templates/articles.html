@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+  	<title>Blog</title>
+	<th:block th:include="fragments/general.html :: headerfiles">
+        </th:block>
+        <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+		<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+		
+  	
+</head>
+<!-- author: Michał Szeworski -->
+<body class="container m-auto p-3 rounded">
+   
+     <header class="py-5 bg-dark bg-gradient rounded text-white d-flex align-items-center position-relative">
+       <div class="position-absolute top-0 end-0 p-2">Zalogowany: <span th:text="${user.username}">User</span></div>
+      <div class="col-lg-2 mx-2 text-center"><i class="material-icons" style="font-size:68px;color:white">import_contacts</i></div>
+      <div class="col-lg-10 d-flex justify-content-start mx-2"><h1>Blog - wszystkie posty</h1></div>
+      <nav class="position-absolute bottom-0 end-0 d-flex align-items-center">
+      <a class="btn text-white d-flex align-items-center" onclick="event.preventDefault();var myCollapse = document.getElementById('collapseForm');var bsCollapse = new bootstrap.Collapse(myCollapse, {toggle: true})" ><i class="material-icons" style="color:white" >add</i> Utwórz artykuł</a> | 
+      <!--<a class="btn text-white d-flex align-items-center" th:href="@{/logout}"><i class="material-icons" style="color:white">person</i> Wyloguj</a>-->
+      <a class="btn text-white d-flex align-items-center" href="javascript: document.logoutForm.submit()" role="menuitem">Wyloguj</a>
+           <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                        <input hidden type="submit" value="Sign Out"/></form>
+      </nav>
+    </header>
+    <main>
+    <div class="row mt-2">
+    <form th:action="@{/}" method="get" class="col-lg-5 col-12">
+    <label for="sort">Sortowanie wg:</label>
+    <select id="sort" class="form-select" name="sortBy">
+    
+	  <option th:each="option : ${optionsList}" th:value="${option.getOptionName()}" th:text="${option.getOptionText()}" th:selected="${#strings.equals(option.getOptionName, selectedSort)}"></option>
+	 
+    </select>
+    <label for="filter">Filtruj wg autora:</label>
+    <select id="filter" class="form-select" name="authorFilter">
+    	<option value="" th:selected="${#strings.equals('', selectedAuthor)}">wszyscy autorzy</option>
+	  <option th:each="aut : ${authorsList}" th:value="${aut.username}" th:text="${aut.username}" th:selected="${#strings.equals(aut.username, selectedAuthor)}"></option>
+	 
+    </select>
+    <button class="btn btn-primary ds-flex align-content-center mt-2" type="submit" >Dostosuj wyniki</button>
+    </form>
+    </div>
+    <div id="posts" >
+    	<!-- <div th:if="${message}" class="m-3 p-3r text-success" th:text="${message}">Message</div>
+		<div th:if="${errors}" class="m-3 p-3r text-danger">
+		<p th:text="${errorMessage}"></p>
+		    <ul>
+		        <li th:each="err : ${errors}" th:text="${err.getDefaultMessage()}" />
+		    </ul>
+		</div> -->
+		<div th:include="fragments/general.html :: article_list" id="articles_list" class="m-0 p-0">
+			
+    
+        </div>
+         
+    </div>
+    <div id="add_post "class="row fixed-bottom bg-light border-top border-primary">
+    <button class="btn btn-primary btn-lg ds-flex align-content-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false"><i class="material-icons">add</i>&nbsp;<span>Utwórz nowy artykuł</span></button>
+      
+        <div class="collapse" id="collapseForm">
+        
+	        <form th:action="@{/addArticle}" th:object="${newArticle}" class="col-lg-6 mx-auto p-3" method="post" id="addForm">
+	        
+		         <div class="mb-3 mt-3">
+		          <label for="postTitle" class="form-label">Temat artykułu:</label><span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger">Błąd</span>
+		          <input type="text" th:field="*{title}" class="form-control" required>
+		          
+		         </div>
+		         <div class="mb-3">
+		          <label for="postBody" class="form-label">Treść artykułu:</label><span th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="text-danger">Błąd</span>
+		          <textarea th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea>
+		         </div>
+		         
+		    	 <div>
+		          <button type="submit" class="btn btn-md btn-primary d-flex mt-3 align-items-center"><i class="material-icons">add</i>&nbsp;Dodaj artykuł</button>
+		         </div>
+	        
+	        </form>
+        </div>
+    </div>
+         
+    </main>
+   	 <script th:inline="javascript">
+		/*<![CDATA[*/
+			
+			var countLikes;
+		   var countArt = /*[[${articles.size}]]*/ 0;
+		   /*[# th:each="article : ${articles}"]*/
+	        countLikes += /*[[${article.likeCount()}]]*/ 0;
+	        /*[/]*/
+		   var maxModifiedDate = /*[[${maxModifiedDate}]]*/ 0;
+		  // var authorsNumber;
+		   var authorsNumber = /*[[${authorsList.size()}]]*/ 0;
+		    
+		    $(document).ready(function () {
+		    	
+		    	
+		    	
+		        setInterval(function () {
+		        	
+	        	
+       	 		
+		            $.ajax({
+		                type: "GET",
+		                url: "/dbChanges", 
+		                dataType: "json",
+		                success: function (response) {
+		                    var data = response;
+		                    if (countArt != data.articlesNumber || countLikes != data.likesNumber || maxModifiedDate < data.maxModifiedDate 
+		                    	
+		                    ) {
+		                        
+		                        $.get("/refreshArticles").done(function (fragment) { 
+		                           	$("#articles_list").html(fragment);
+		                           	if (authorsNumber > data.authorsList.length || authorsNumber < data.authorsList.length){
+		                           		var filterVal = $("#filter option:selected").val();
+		                     
+		                           		$("#filter").children().not(':first-child').remove() ;
+		                           		
+		                           		$.each(data.authorsList, function(i,item){
+		                           		$("#filter").append("<option value='"+item+"'>" + item + "</option>");
+		                           		});
+		                           		
+		                           		$("#filter").val(filterVal).change();
+		                           		authorsNumber = data.authorsList.length;
+		                           	};
+		                        });
+		                        countArt = data.articlesNumber; countLikes = data.likesNumber; maxModifiedDate = data.maxModifiedDate;
+		                        
+		                       
+		                        
+		                    }
+		                },
+		                error: function (){
+		                	$.get("/refreshArticles").done(function (fragment) { 
+	                           	$("#articles_list").html(fragment);
+	                           	
+	                        });
+		                	//countArt = data.articlesNumber; countLikes = data.likesNumber;
+		                	$("#filter").val(selected);
+		                }
+		            });
+		        }, 4000);
+		        
+		        
+		        /* var selected = $("#filter").find(":selected").val();
+		        $("#filter").prepend("<option value=''>Brak</option>").val('');
+				$("#filter").val(selected); */
+		    	
+		    	
+		    	
+		    });
+		
+		/*]]>*/
+	</script>
+    <script>
+     	tinymce.init({
+        selector: 'textarea#body',
+        plugins: 'link image lists code emoticons',
+        toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | fontsize forecolor | emoticons',
+        language: 'pl',
+       	height: '300'
+  		
+      }); 
+      
+      var token = $("meta[name='_csrf']").attr("content");
+      var header = $("meta[name='_csrf_header']").attr("content");
+      var updateLikes = function(id,isLiked){
+    	  
+		
+			
+			$.ajax({
+				  type: 'POST',
+				  url: "likes_update?id=" + id + "&liked="+isLiked,
+				  beforeSend: function(request){
+					  request.setRequestHeader(header, token);
+				  },
+				  success: function (fragment) { 
+		               	$("#lcard"+id).html(fragment);
+				  
+				 
+				  },
+				  error: function(){
+					$.get("/refreshArticles").done(function (fragment) { 
+				   
+	                 	$("#articles_list").html(fragment);
+	                   	
+	              });
+				}});
+      }
+	              
+			
+      
+     
+      
+      
+     
+    </script>
+    <footer th:replace="fragments/general.html :: footer"></footer>
+    </body>
+</html>

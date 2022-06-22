@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+
+<title>Rejestracja</title>
+<th:block th:include="fragments/general.html :: headerfiles">
+        </th:block>
+</head>
+<!-- author: Michał Szeworski -->
+<body class="container m-auto p-3">
+  
+   
+    <header class="py-5 bg-dark bg-gradient rounded text-white d-flex align-items-center position-relative">
+      <div class="col-lg-2 mx-2 text-center"><i class="material-icons" style="font-size:68px;color:white">import_contacts</i></div>
+      <div class="col-lg-10 d-flex justify-content-start mx-2"><h1>Blog - rejestracja</h1></div>
+      
+    </header>
+    <main class="container">
+    <div class="row">
+         
+          <div class="col-12">
+          		
+          		<div th:if="${message}" class="m-3 p-3 text-danger text-center fs-5">
+					<i class="material-icons d-block display-5">error</i>
+					<p class="p-0 m-0" th:text="${message}">error</p>
+					   
+				</div>
+          		
+                <!-- <div th:if="${message}" th:text="${message}" class="p-3 my-3 text-danger">Message</div> -->
+				 
+                
+                <form th:action="@{/register}" th:object="${form}" class="border p-3 my-3 shadow-sm rounded row" method="post" id="registerForm">
+               
+                  <h2 class="col-12"><i class="material-icons">person_add</i> Nie masz konta? Zarejestruj się.</h2>
+                 <div class="col-lg-6 col-12">
+                  <div class="mb-3 mt-3">
+                  <label for="username" class="form-label">Login użytkownika:</label>
+                  <input th:field="*{username}" class="form-control" placeholder="Wpisz login" required><span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger">Błąd</span>
+                  </div>
+                  <div class="mb-3 mt-3">
+                  <label for="fullname" class="form-label">Pełna nazwa użytkownika:</label>
+                  <input th:field="*{fullname}" class="form-control" placeholder="Wpisz pełną nazwę" required><span th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}" class="text-danger">Błąd</span>
+                  </div>
+                  <div class="mb-3">
+                  <label for="password" class="form-label">Hasło:</label>
+                  <input type="password" th:field="*{password}" class="form-control"placeholder="Wpisz hasło" required><span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger">Błąd</span>
+                  </div>
+                  <div class="mb-3">
+                  <label for="confirm" class="form-label">Powtórz hasło:</label>
+                  <input type="password" th:field="*{matchingPassword}" class="form-control" placeholder="Powtórz hasło" required><span th:if="${#fields.hasErrors('${form}')}" th:errors="${form}" class="text-danger">Błąd</span>
+                  </div>
+                  
+                  <button type="submit" class="btn btn-primary">Zarejestruj</button> <a class="ms-3" th:href="@{/}">Ekran logowania</a>
+                  
+                  </div>
+          </form> 
+          </div>
+        </div>
+       
+    </main>
+     <footer th:replace="fragments/general.html :: footer"></footer>
+</body>
+</html>

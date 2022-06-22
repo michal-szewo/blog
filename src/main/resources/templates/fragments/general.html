@@ -54,8 +54,9 @@
                 <div class="card-text p-3" th:utext="${article.body}">Body</div>
                 
                 <div th:id="'lcard' + ${article.id}" class="m-0 p-0">
-                <div class="card-footer d-flex justify-content-end align-items-center">
-                
+                <div class="card-footer d-flex justify-content-end align-items-center"  style="position:relative">
+                <!-- <button class="btn btn-white d-flex align-content-center" style="position:absolute;left:0" type="button" data-bs-toggle="collapse" th:attr="data-bs-target='#commentCard' + ${article.id}" aria-expanded="false"><i class="material-icons">comment</i>&nbsp;Komentarze</button> -->
+		    			
                 <div class="dropdown">
                 	<button type="button" class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown" th:text="'Polubień: ' + ${article.likeCount()}">Likes count
                 	</button>
@@ -69,7 +70,6 @@
                 <div class="btn btn-white d-flex align-items-center">
 		    			
 		    			
-		    			<!-- <input type="hidden" th:value="${article.isLikedByUser(user)}" th:attr="name='isLiked'"/> -->
 		    			
 		    				<button th:if="${!article.isLikedByUser(user)}" th:attr="onclick=|updateLikes('${article.id}',${article.isLikedByUser(user)})|" class="btn btn-success d-flex align-items-center">
 		    									
@@ -83,8 +83,39 @@
 		    				</button>
 		    			
 					</div>
+					 
 					</div>
-                </div>
+
+
+					
+				</div>
+				
+				 <div th:id="'commentCard' + ${article.id}" class="m-0 p-0">
+					<div class="card-footer d-flex flex-column">
+						<div th:if="${article.comments != null || article.comments.size != 0}">
+							<div th:each="comment : ${article.comments}" class="d-flex flex-row align-items-center">
+								<i class="material-icons">comment</i>&nbsp;<span th:text="${comment.user.username}" class="me-4">Autor</span>
+								<div class="border-bottom bg-white p-2 me-2 my-2" th:text="${comment.body}">Treść</div>
+							</div>
+						</div>
+						<form class="col-lg-6 p-3" onsubmit="event.preventDefault();addComment($(this));">
+
+							<div class="mb-3">
+								<label class="form-label">Komentarz:</label>
+								<textarea th:id="'commText'+${article.id}" th:name="body" class="form-control comments_textareas" style="resize:none" rows="1" required onkeyup='saveValue($(this));'></textarea>
+							</div>
+							<input type="hidden" th:name="article" th:value="${article.id}">
+							<!-- <input type="hidden" th:name="user" th:value="${user.id}"> -->
+							<div>
+								<button type="submit" class="btn btn-md btn-primary d-flex mt-3 align-items-center"><i class="material-icons">add</i>&nbsp;Dodaj komentarz</button>
+							</div>
+
+						</form>
+
+
+					</div>
+				
+				</div>
               </article>
               
          </div>
@@ -98,6 +129,8 @@
     
   	<script type="text/javascript">
   	$(document).ready(function () {
+  	
+  	  
   	
   	if ($('#back-to-top').length) {
   	    var scrollTrigger = 100,

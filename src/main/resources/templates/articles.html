@@ -12,7 +12,6 @@
 </head>
 <!-- author: Michał Szeworski -->
 <body class="container m-auto p-3 rounded">
-   
      <header class="py-5 bg-dark bg-gradient rounded text-white d-flex align-items-center position-relative">
        <div class="position-absolute top-0 end-0 p-2">Zalogowany: <span th:text="${user.username}">User</span></div>
       <div class="col-lg-2 mx-2 text-center"><i class="material-icons" style="font-size:68px;color:white">import_contacts</i></div>
@@ -79,6 +78,7 @@
 		         </div>
 	        
 	        </form>
+
         </div>
     </div>
          
@@ -86,18 +86,20 @@
    	 <script th:inline="javascript">
 		/*<![CDATA[*/
 			
-			var countLikes;
-		   var countArt = /*[[${articles.size}]]*/ 0;
-		   /*[# th:each="article : ${articles}"]*/
-	        countLikes += /*[[${article.likeCount()}]]*/ 0;
-	        /*[/]*/
-		   var maxModifiedDate = /*[[${maxModifiedDate}]]*/ 0;
-		  // var authorsNumber;
-		   var authorsNumber = /*[[${authorsList.size()}]]*/ 0;
+			$(document).ready(function () {
+				
+				$('.comments_textareas').each(function(i,obj){
+			  		$(this).val(getSavedValue($(this).attr('id')));
+			  	});
+				
+			
+			   var countLikes = /*[[${likesNumber}]]*/ 0;
+			   var countComments = /*[[${commentsNumber}]]*/ 0;
+			   var countArt = /*[[${articlesNumber}]]*/ 0;
+			   var maxModifiedDate = /*[[${maxModifiedDate}]]*/ 0;
+			   var authorsNumber = /*[[${authorsNumber}]]*/ 0;
 		    
-		    $(document).ready(function () {
-		    	
-		    	
+
 		    	
 		        setInterval(function () {
 		        	
@@ -109,12 +111,15 @@
 		                dataType: "json",
 		                success: function (response) {
 		                    var data = response;
-		                    if (countArt != data.articlesNumber || countLikes != data.likesNumber || maxModifiedDate < data.maxModifiedDate 
-		                    	
+		                    if (countArt != data.articlesNumber || countLikes != data.likesNumber || maxModifiedDate < data.maxModifiedDate || 
+		                    	countComments < data.commentsNumber
 		                    ) {
 		                        
 		                        $.get("/refreshArticles").done(function (fragment) { 
 		                           	$("#articles_list").html(fragment);
+		                           	$('.comments_textareas').each(function(i,obj){
+			        			  		$(this).val(getSavedValue($(this).attr('id')));
+			        			  	});
 		                           	if (authorsNumber > data.authorsList.length || authorsNumber < data.authorsList.length){
 		                           		var filterVal = $("#filter option:selected").val();
 		                     
@@ -129,8 +134,10 @@
 		                           	};
 		                        });
 		                        countArt = data.articlesNumber; countLikes = data.likesNumber; maxModifiedDate = data.maxModifiedDate;
+		                        countComments = data.commentsNumber;
 		                        
-		                       
+		                        
+		                      
 		                        
 		                    }
 		                },
@@ -168,13 +175,14 @@
       
       var token = $("meta[name='_csrf']").attr("content");
       var header = $("meta[name='_csrf_header']").attr("content");
+      
+      
       var updateLikes = function(id,isLiked){
-    	  
-		
+
 			
 			$.ajax({
 				  type: 'POST',
-				  url: "likes_update?id=" + id + "&liked="+isLiked,
+				  url: "/likes_update?id=" + id + "&liked="+isLiked,
 				  beforeSend: function(request){
 					  request.setRequestHeader(header, token);
 				  },
@@ -191,8 +199,46 @@
 	              });
 				}});
       }
+      
+      var addComment = function(form){
+    	  
+    	  var comment = form.serialize();
+    	  var article_id = form.find("input:hidden[name=article]").val();
+    	  $.ajax({
+    		type: 'POST',
+    		url: "/addComment?" + comment,
+    		beforeSend: function(request){
+				  request.setRequestHeader(header, token);},
+    		success: function (fragment) {
+    			localStorage.removeItem("commText"+article_id);
+    			$("#commentCard"+article_id).html(fragment);
+    			
+    			
+    		},
+    	  error: function(){
+				$.get("/refreshArticles").done(function (fragment) { 
+			   
+               	$("#articles_list").html(fragment);
+                 	
+            });
+    		
+    	  }   
+      });
+      };
 	              
-			
+      function saveValue(e){
+          var id = e.attr('id');  
+          var val = e.val(); 
+          localStorage.setItem(id, val); 
+      }
+
+      
+      function getSavedValue(v){
+          if (!localStorage.getItem(v)) {
+              return "";
+          }
+          return localStorage.getItem(v);
+      }	
       
      
       
