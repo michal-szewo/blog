@@ -168,9 +168,10 @@
       
       var token = $("meta[name='_csrf']").attr("content");
       var header = $("meta[name='_csrf_header']").attr("content");
+      
+      
       var updateLikes = function(id,isLiked){
-    	  
-		
+
 			
 			$.ajax({
 				  type: 'POST',
@@ -190,6 +191,13 @@
 	                   	
 	              });
 				}});
+      }
+      
+      var addComment = function(){
+    	  
+    	  var comment = new Object();
+    	  
+    	  
       }
 	              
 			

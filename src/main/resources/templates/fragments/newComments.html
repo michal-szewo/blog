@@ -18,8 +18,8 @@
         <form th:action="@{/addComment}" th:object="${newComment}" class="col-lg-6 mx-auto p-3" method="post" id="addForm">
 
             <div class="mb-3">
-                <label for="postBody" class="form-label">Treść komentarza:</label>
-                <textarea id="postBody" th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea>
+                <label for="commBody" class="form-label">Treść komentarza:</label>
+                <textarea id="commBody" th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea>
             </div>
             <input type="hidden" th:field="*{user}" th:value="${article.id}">
             <input type="hidden" th:field="*{article}" th:value="${user.id}">

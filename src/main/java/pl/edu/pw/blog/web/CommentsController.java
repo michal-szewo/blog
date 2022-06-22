@@ -63,21 +63,7 @@ public class CommentsController{
     		
     	commRepo.save(comment);
     	
-		/*
-		 * Article commentedArticle = comment.getArticle(); List<Comments> commentsList
-		 * = commentedArticle.getComments();
-		 * 
-		 * commentsList.add(comment);
-		 * 
-		 * artRepo.save(commentedArticle);
-		 * 
-		 * model.addAttribute("article",commentedArticle);
-		 * 
-		 * log.warn("article: " + comment.getArticle()); log.warn("author: " +
-		 * comment.getUser());
-		 */
-       
-      return "redirect:/";
+      return "fragments/newComments :: commentCard";
     }
 
 

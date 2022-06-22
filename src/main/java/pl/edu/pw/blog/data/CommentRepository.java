@@ -16,16 +16,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface CommentRepository extends CrudRepository<Comments, Long> {
 
-//    Comments findByUsername(Optional<String> name);
-//    Comments findByUsername(String name);
-//
-//    User findById(Optional<Long> id);
-//
-//
-//    @Query("select u from Comments u join u.articles a order by u.username")
-//    Set<User> findAllAuthors();
-
-
-
 
 }
