@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pl.edu.pw.blog.data.User;
 import pl.edu.pw.blog.data.UserRepository;
@@ -51,8 +52,8 @@ public class RegistrationController {
 
   
   @PostMapping
-  public String processRegistration(@ModelAttribute("form") @Valid RegistrationForm form, Errors errors, Model model) {
-	  log.info("PROCESSING REGISTRATION");
+  public String processRegistration(@ModelAttribute("form") @Valid RegistrationForm form, Errors errors, Model model, RedirectAttributes redirectAttributes) {
+	  log.info("Przetwarzanie rejestracji");
 	  if (errors.hasErrors()) {
 		  log.info("Rejestracja zawiodła z powodu błędów w formularzu.");
 		  return "register";
@@ -72,8 +73,9 @@ public class RegistrationController {
 	        return "register";
 	    } 
 	  
-	
-    return "redirect:/login";
+	redirectAttributes.addFlashAttribute("successMsg", "Rejestracja udana. Zaloguj się.");
+    
+	return "redirect:/login";
   }
 
 }
