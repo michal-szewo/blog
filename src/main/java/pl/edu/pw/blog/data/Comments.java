@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * A JPA entity class having the ability to represent Articles' objects in the database.
+ * A JPA entity class having the ability to represent Comments' objects in the database.
  *
  * @author Viaceslav
  *
@@ -55,14 +55,14 @@ public class Comments implements Serializable{
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat (pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(nullable=false,updatable=false) // updatable=false -> gwarantuje niezmienność Daty i zmiennych w Hibernate
+    @Column(nullable=false,updatable=false) // updatable=false -> gwarantuje niezmiennosc Daty i zmiennych w Hibernate
     private Date publishedAt;
 
     @NonNull
     @Column(length=65000,nullable=false)
     private String body;
 
-    // Łączenie tabeli Comments z Tabelą Users
+    // Laczenie tabeli Comments z Tabelą Users
 
     /**
     *adnotacja @JoinColumn(name="author_id", nullable=false) w tym przypadku połączy t
