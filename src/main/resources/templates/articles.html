@@ -10,7 +10,7 @@
 		
   	
 </head>
-<!-- author: Michał Szeworski, Viaceslav Pavlovskij -->
+<!-- author: Michał Szeworski -->
 <body class="container m-auto p-3 rounded">
      <header class="py-5 bg-dark bg-gradient rounded text-white d-flex align-items-center position-relative">
        <div class="position-absolute top-0 end-0 p-2">Zalogowany: <span th:text="${user.username}">User</span></div>
@@ -87,6 +87,11 @@
 		/*<![CDATA[*/
 			
 			$(document).ready(function () {
+				
+				$('.comments_textareas').each(function(i,obj){
+			  		$(this).val(getSavedValue($(this).attr('id')));
+			  	});
+				
 			
 			   var countLikes = /*[[${likesNumber}]]*/ 0;
 			   var countComments = /*[[${commentsNumber}]]*/ 0;
@@ -112,6 +117,9 @@
 		                        
 		                        $.get("/refreshArticles").done(function (fragment) { 
 		                           	$("#articles_list").html(fragment);
+		                           	$('.comments_textareas').each(function(i,obj){
+			        			  		$(this).val(getSavedValue($(this).attr('id')));
+			        			  	});
 		                           	if (authorsNumber > data.authorsList.length || authorsNumber < data.authorsList.length){
 		                           		var filterVal = $("#filter option:selected").val();
 		                     
@@ -128,7 +136,8 @@
 		                        countArt = data.articlesNumber; countLikes = data.likesNumber; maxModifiedDate = data.maxModifiedDate;
 		                        countComments = data.commentsNumber;
 		                        
-		                       
+		                        
+		                      
 		                        
 		                    }
 		                },
@@ -201,7 +210,9 @@
     		beforeSend: function(request){
 				  request.setRequestHeader(header, token);},
     		success: function (fragment) {
+    			localStorage.removeItem("commText"+article_id);
     			$("#commentCard"+article_id).html(fragment);
+    			
     			
     		},
     	  error: function(){
@@ -215,7 +226,19 @@
       });
       };
 	              
-			
+      function saveValue(e){
+          var id = e.attr('id');  
+          var val = e.val(); 
+          localStorage.setItem(id, val); 
+      }
+
+      
+      function getSavedValue(v){
+          if (!localStorage.getItem(v)) {
+              return "";
+          }
+          return localStorage.getItem(v);
+      }	
       
      
       

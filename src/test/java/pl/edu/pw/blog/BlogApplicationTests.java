@@ -34,12 +34,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 
-import pl.edu.pw.blog.data.CommentRepository;
+
 import pl.edu.pw.blog.data.User;
 import pl.edu.pw.blog.data.UserRepository;
 import pl.edu.pw.blog.security.RegistrationController;
 import pl.edu.pw.blog.security.UserService;
-import pl.edu.pw.blog.web.ArticlesController;
 
 
 /**
@@ -197,15 +196,13 @@ class BlogApplicationTests {
 	}
 	
 	// Test udanego logowania po podaniu prawidłowych poświadczeń (poświadczenia załadowane uprzednio za pomocą pliku test-user-data.sql)
-	// Spodziewany rezultat: przekeirowanie do strony głównej
+	// Spodziewany rezultat: przekierowanie do strony głównej
 	@Test
 	@Sql(scripts = "/test-user-data.sql")
 	public void testSuccessfulLogin() throws Exception {
 		
-	    RequestBuilder requestBuilder = formLogin().user("m").password("test1234");
-	    this.mockMvc.perform(requestBuilder);
-	    
-	   // this.mockMvc.perform(requestBuilder).andExpect(redirectedUrl("/")).andExpect(status().isFound());
+	    RequestBuilder requestBuilder = formLogin().user("test").password("test1234");
+	    this.mockMvc.perform(requestBuilder).andExpect(redirectedUrl("/")).andExpect(status().isFound());
 	    
 	    
 	}
@@ -228,7 +225,7 @@ class BlogApplicationTests {
 		
 	    
 		MvcResult result = this.mockMvc.perform(get("/").sessionAttr("user", userRepo.findByUsername("test")).flashAttrs(mockModelAttributes))
-	        .andExpect(status().isOk())
+	        .andExpect(status().isOk())	
 	        .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
 	        .andReturn();
 		
