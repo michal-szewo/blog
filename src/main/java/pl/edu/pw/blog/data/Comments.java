@@ -1,6 +1,6 @@
 package pl.edu.pw.blog.data;
 
-import java.io.Serial;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -44,7 +44,7 @@ public class Comments implements Serializable{
     // Definicja zmiennych globalnych
 
 
-    @Serial
+    
     private static final long serialVersionUID = 1L;
 
 
@@ -62,7 +62,7 @@ public class Comments implements Serializable{
     @Column(length=65000,nullable=false)
     private String body;
 
-    // Laczenie tabeli Comments z Tabelą Users
+    // Laczenie tabeli Comments z Tabela Users
 
     /**
     *adnotacja @JoinColumn(name="author_id", nullable=false) w tym przypadku połączy t
