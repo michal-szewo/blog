@@ -100,9 +100,13 @@ public class Article implements Serializable{
 	}
 	
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "article",fetch=FetchType.EAGER)
 	private List<Comments> comments = new ArrayList<>();
 	
+	
+	public int commentsCount(){
+	    return getComments().size();
+	}
 	
 	public int likeCount(){
 	    return getLikers().size();

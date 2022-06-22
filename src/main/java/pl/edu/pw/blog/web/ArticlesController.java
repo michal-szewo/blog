@@ -34,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.edu.pw.blog.data.AjaxDBChange;
 import pl.edu.pw.blog.data.Article;
 import pl.edu.pw.blog.data.ArticleRepository;
+import pl.edu.pw.blog.data.CommentRepository;
 import pl.edu.pw.blog.data.Comments;
 import pl.edu.pw.blog.data.User;
 import pl.edu.pw.blog.data.UserRepository;
@@ -79,6 +80,11 @@ public class ArticlesController{
 	@Autowired
 	ArticleRepository articleRepo;
 	
+	/**
+	 * Injecting CommentRepository bean into the controller.
+	 */
+	@Autowired
+	CommentRepository commRepo;
 	
 	
 	/**
@@ -118,21 +124,18 @@ public class ArticlesController{
 			Model model, HttpSession session){
 		
 			
-			
 			String sortBy= null,authorName = null;
 			
 			
 			
 			model.addAttribute("optionsList",refine.getOptionsList());
-			model.addAttribute("authorsList",userRepo.findAllAuthors());
+			
 			
 			if (sort.isPresent()) {
 				session.setAttribute("sortBy", sort.get());
 				sortBy = sort.get();
 				
-				
-				
-				 
+
 				 
 			} else {
 				if(session.getAttribute("sortBy")==null) {
@@ -180,9 +183,19 @@ public class ArticlesController{
 			}
 			
 			
-			
+			Set<User> authorsList = userRepo.findAllAuthors();
+			Long countLikes = 0L;
+			for (Article a : articleRepo.findAll()) {
+				countLikes += a.likeCount();
+			}
+			model.addAttribute("likesNumber",countLikes);
+			model.addAttribute("commentsNumber",commRepo.count());
+			model.addAttribute("authorsList",authorsList);
+			model.addAttribute("authorsNumber",authorsList.size());
+			model.addAttribute("articlesNumber",articleRepo.count());
 			model.addAttribute("maxModifiedDate",!articleRepo.findMaxModifiedDate().isPresent() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
-		
+			
+			
 			return "articles";
 	}
 	
@@ -219,9 +232,18 @@ public class ArticlesController{
 			}
 			
 			
+			Set<User> authorsList = userRepo.findAllAuthors();
+			Long countLikes = 0L;
+			for (Article a : articleRepo.findAll()) {
+				countLikes += a.likeCount();
+			}
+			model.addAttribute("likesNumber",countLikes);
+			model.addAttribute("commentsNumber",commRepo.count());
+			model.addAttribute("authorsList",authorsList);
+			model.addAttribute("authorsNumber",authorsList.size());
+			model.addAttribute("articlesNumber",articleRepo.count());
 			model.addAttribute("maxModifiedDate",!articleRepo.findMaxModifiedDate().isPresent() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime());
 			
-			model.addAttribute("authorsList",userRepo.findAllAuthors());
 		
 			return "fragments/general :: article_list";
 	}
@@ -432,10 +454,12 @@ public class ArticlesController{
 		for (Article article : articles) {
 			countLikes += article.likeCount();
 		}
+		
+		
 		Long maxModifiedAt = !articleRepo.findMaxModifiedDate().isPresent() ? new Date().getTime(): articleRepo.findMaxModifiedDate().get().getTime();
 		
 		
-		return new AjaxDBChange(articleRepo.count(), countLikes, maxModifiedAt, authorsNamesList);
+		return new AjaxDBChange(articleRepo.count(), countLikes, maxModifiedAt, commRepo.count(), authorsNamesList);
 	}
 	
 	/**

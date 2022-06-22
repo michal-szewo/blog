@@ -86,18 +86,15 @@
    	 <script th:inline="javascript">
 		/*<![CDATA[*/
 			
-			var countLikes;
-		   var countArt = /*[[${articles.size}]]*/ 0;
-		   /*[# th:each="article : ${articles}"]*/
-	        countLikes += /*[[${article.likeCount()}]]*/ 0;
-	        /*[/]*/
-		   var maxModifiedDate = /*[[${maxModifiedDate}]]*/ 0;
-		  // var authorsNumber;
-		   var authorsNumber = /*[[${authorsList.size()}]]*/ 0;
+			$(document).ready(function () {
+			
+			   var countLikes = /*[[${likesNumber}]]*/ 0;
+			   var countComments = /*[[${commentsNumber}]]*/ 0;
+			   var countArt = /*[[${articlesNumber}]]*/ 0;
+			   var maxModifiedDate = /*[[${maxModifiedDate}]]*/ 0;
+			   var authorsNumber = /*[[${authorsNumber}]]*/ 0;
 		    
-		    $(document).ready(function () {
-		    	
-		    	
+
 		    	
 		        setInterval(function () {
 		        	
@@ -109,8 +106,8 @@
 		                dataType: "json",
 		                success: function (response) {
 		                    var data = response;
-		                    if (countArt != data.articlesNumber || countLikes != data.likesNumber || maxModifiedDate < data.maxModifiedDate 
-		                    	
+		                    if (countArt != data.articlesNumber || countLikes != data.likesNumber || maxModifiedDate < data.maxModifiedDate || 
+		                    	countComments < data.commentsNumber
 		                    ) {
 		                        
 		                        $.get("/refreshArticles").done(function (fragment) { 
@@ -129,6 +126,7 @@
 		                           	};
 		                        });
 		                        countArt = data.articlesNumber; countLikes = data.likesNumber; maxModifiedDate = data.maxModifiedDate;
+		                        countComments = data.commentsNumber;
 		                        
 		                       
 		                        
@@ -175,7 +173,7 @@
 			
 			$.ajax({
 				  type: 'POST',
-				  url: "likes_update?id=" + id + "&liked="+isLiked,
+				  url: "/likes_update?id=" + id + "&liked="+isLiked,
 				  beforeSend: function(request){
 					  request.setRequestHeader(header, token);
 				  },
@@ -193,12 +191,29 @@
 				}});
       }
       
-      var addComment = function(){
+      var addComment = function(form){
     	  
-    	  var comment = new Object();
-    	  
-    	  
-      }
+    	  var comment = form.serialize();
+    	  var article_id = form.find("input:hidden[name=article]").val();
+    	  $.ajax({
+    		type: 'POST',
+    		url: "/addComment?" + comment,
+    		beforeSend: function(request){
+				  request.setRequestHeader(header, token);},
+    		success: function (fragment) {
+    			$("#commentCard"+article_id).html(fragment);
+    			
+    		},
+    	  error: function(){
+				$.get("/refreshArticles").done(function (fragment) { 
+			   
+               	$("#articles_list").html(fragment);
+                 	
+            });
+    		
+    	  }   
+      });
+      };
 	              
 			
       
