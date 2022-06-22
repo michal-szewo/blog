@@ -1,7 +1,6 @@
 package pl.edu.pw.blog;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -11,7 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import java.util.HashMap;
 import java.util.Map;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -52,13 +50,12 @@ class BlogApplicationTests {
 	Long articlesNumber = 2L;
 	Long authorsNumber = 2L;
 	
-	Map<String,Object> mockModelAttributes = Map.ofEntries(
-			entry("likesNumber",likesNumber),
-			entry("commentsNumber",commentsNumber),
-			entry("articlesNumber",articlesNumber),
-			entry("authorsNumber",authorsNumber)
-			);
-	
+	/*
+	 * Map<String,Object> mockModelAttributes = Map.ofEntries(
+	 * entry("likesNumber",likesNumber), entry("commentsNumber",commentsNumber),
+	 * entry("articlesNumber",articlesNumber), entry("authorsNumber",authorsNumber)
+	 * );
+	 */
 
 	@Autowired
 	private MockMvc mockMvc;
