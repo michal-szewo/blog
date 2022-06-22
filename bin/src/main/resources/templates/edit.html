@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+  	<title>Blog</title>
+	<th:block th:include="fragments/general.html :: headerfiles">
+        </th:block>
+  	
+</head>
+<!-- author: Michał Szeworski -->
+<body class="container m-auto p-3 rounded">
+   
+     <header class="py-5 bg-dark bg-gradient rounded text-white d-flex align-items-center position-relative">
+       <div class="position-absolute top-0 end-0 p-2">Zalogowany: <span th:text="${user.username}">User</span></div>
+      <div class="col-lg-2 mx-2 text-center"><i class="material-icons" style="font-size:68px;color:white">import_contacts</i></div>
+      <div class="col-lg-10 d-flex justify-content-start mx-2"><h1>Blog - edycja artykułu <span th:text="${article.id}"></span></h1></div>
+      <nav class="position-absolute bottom-0 end-0 d-flex align-items-center">
+      <a th:href="@{/}" class="btn text-white d-flex align-items-center" >Powrót do strony głównej</a> | 
+      <!--<a class="btn text-white d-flex align-items-center" th:href="@{/logout}"><i class="material-icons" style="color:white">person</i> Wyloguj</a>-->
+      <a class="btn text-white d-flex align-items-center" href="javascript: document.logoutForm.submit()" role="menuitem">Wyloguj</a>
+           <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                        <input hidden type="submit" value="Sign Out"/></form>
+      </nav>
+    </header>
+    <main>
+    	
+    <div id="post">
+    <!-- <div th:if="${message}" th:text="${message}" class="mb-3 mt-3 mx-3 text-success text-center fs-5">Message</div> -->
+    <div th:include="fragments/general.html :: articles_errors" class="m-0 p-0"></div>
+      	  <form name="editForm" th:action="@{'/modifyArticle/{id}'(id=${article.id})}" th:object="${article}" class="row" method="post" id="addForm">
+	        <div class="col-lg-8">	
+	        	
+		         <div class="mb-3 mt-3">
+		          <label for="postTitle" class="form-label">Temat artykułu:</label><span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger d-inline-block ms-3">Błąd</span>
+		          <input id="postTitle" type="text" th:field="*{title}" class="form-control" onkeyup="document.getElementById('editBtn').disabled = false" required>
+		         </div>
+		         <div class="mb-3">
+		          <label for="postBody" class="form-label">Treść posta:</label><span th:if="${#fields.hasErrors('body')}" th:errors="*{body}" class="text-danger d-inline-block ms-3">Błąd</span>
+		          <textarea th:field="*{body}" class="form-control" style="resize:none" rows="3"></textarea>
+		         </div>
+		    	 <div class="d-flex">
+		          <button name="modify" value="modify" type="submit" id="editBtn" class="btn btn-md btn-success d-flex mt-3 align-items-center" disabled><i class="material-icons">mode_edit</i>&nbsp;Zapisz zmiany</button>
+		          
+		          <a th:href="@{/}" class="btn btn-md btn-primary d-flex mt-3 ms-3 align-items-center">Powrót do strony głównej</a>
+		          
+		          <button name="delete" value="delete" type="submit" id="deleteBtn" class="btn btn-md btn-danger d-flex mt-3 ms-3 align-items-center"><i class="material-icons">delete_forever</i>&nbsp;Usuń artykuł</button>
+		         
+		         </div>
+	        </div>
+	         <div class="col-lg-4 ">
+	        	<div class="mb-3 mt-3">
+		          <label for="postAuthor" class="form-label">Autor artykułu:</label>
+		          <input id="postAuthor" type="text" th:field="*{author.username}" class="form-control" readonly>
+		         </div>
+		         <div class="mb-3 mt-3">
+		          <label for="CreationDate" class="form-label">Data publikacji:</label>
+		          <input id="CreationDate" type="text" th:field="*{publishedAt}" class="form-control" readonly>
+		         </div>
+		         <div class="mb-3 mt-3">
+		          <label for="postAuthor" class="form-label">Data modyfikacji:</label>
+		          <input name="postAuthor" type="text" th:field="*{modifiedAt}" class="form-control" readonly>
+		         </div>
+		          
+	        </div>
+	       </form>
+	       
+            
+         </div>
+  
+         
+    </main>
+    <script>
+      tinymce.init({
+        selector: 'textarea#body',
+        plugins: 'link image lists code emoticons',
+        toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | fontsize forecolor | emoticons',
+        language: 'pl',
+        setup: function(editor) {
+    	editor.on('keyup', function(e) {
+      	    $('#editBtn').attr('disabled', false);
+            
+    });
+  }
+       
+  		
+      });
+      $(document).ready(function() {
+    	    $("#deleteBtn").click(function(event) {
+    	        if( !confirm('Czy jesteś pewien, że chcesz usunąć artykuł?') ){
+    	            event.preventDefault();
+    	        } 
+
+    	    });
+    	});
+    </script>
+    <footer th:replace="fragments/general.html :: footer"></footer>
+    </body>
+</html>

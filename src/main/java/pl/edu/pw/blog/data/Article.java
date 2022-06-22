@@ -1,7 +1,9 @@
 package pl.edu.pw.blog.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -16,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -96,6 +99,14 @@ public class Article implements Serializable{
 		this.modifiedAt = new Date();
 	}
 	
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "article",fetch=FetchType.EAGER)
+	private List<Comments> comments = new ArrayList<>();
+	
+	
+	public int commentsCount(){
+	    return getComments().size();
+	}
 	
 	public int likeCount(){
 	    return getLikers().size();

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<!-- author: Viaceslav Pavlovskij -->
+<body>
+<div th:fragment="commentCard">
+
+
+   <div class="card-footer d-flex flex-column">
+						<div th:if="${article.comments != null || article.comments.size != 0}">
+							<div th:each="comment : ${article.comments}" class="d-flex flex-row align-items-center">
+								<i class="material-icons">comment</i>&nbsp;<span th:text="${comment.user.username}" class="me-4">Autor</span>
+								<div class="border-bottom bg-white p-2 me-2 my-2" th:text="${comment.body}">Treść</div>
+							</div>
+						</div>
+						<form class="col-lg-6 p-3" onsubmit="event.preventDefault();addComment($(this));">
+
+							<div class="mb-3">
+								<label class="form-label">Komentarz:</label>
+								<textarea th:id="'commText'+${article.id}" th:name="body" class="form-control comments_textareas" style="resize:none" rows="1" required onkeyup='saveValue($(this));'></textarea>
+							</div>
+							<input th:id="'art'+${article.id}" type="hidden" th:name="article" th:value="${article.id}">
+							<div>
+								<button type="submit" class="btn btn-md btn-primary d-flex mt-3 align-items-center"><i class="material-icons">add</i>&nbsp;Dodaj komentarz</button>
+							</div>
+
+						</form>
+
+
+					</div>
+
+</div>
+
+</body>
+</html>

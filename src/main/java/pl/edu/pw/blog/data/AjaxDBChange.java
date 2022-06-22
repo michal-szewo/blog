@@ -29,5 +29,10 @@ public class AjaxDBChange {
 	private Long maxModifiedDate;
 	
 	@NonNull
+	private Long commentsNumber;
+	
+	@NonNull
 	private List<String> authorsList;
+	
+
 }

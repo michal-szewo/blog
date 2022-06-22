@@ -1,11 +1,14 @@
 package pl.edu.pw.blog.data;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -66,6 +69,9 @@ public class User implements Comparable<User>, UserDetails{
 	@ManyToMany(mappedBy = "likers",fetch=FetchType.EAGER)
 	private Set<Article> likedArticles = new HashSet<>();
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	private List<Comments> comments = new ArrayList<>();
+
 	
 	
 	@Override

@@ -19,6 +19,8 @@ import org.springframework.security.config.annotation.web
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 
 
 
@@ -42,7 +44,8 @@ private UserDetailsService userDetailsService;
 protected void configure(HttpSecurity http) throws Exception {
   http
   .authorizeRequests()
-			.antMatchers("/h2-console/**","/register","/login/**","/custom.css").access("permitAll")
+
+			.antMatchers("/register","/login/**","/custom.css").access("permitAll")
 			.antMatchers("/**").access("hasRole('ROLE_USER')")
 			
 	.and()
@@ -58,14 +61,19 @@ protected void configure(HttpSecurity http) throws Exception {
         .logoutSuccessUrl("/")
         .invalidateHttpSession(true)
         .deleteCookies("JSESSIONID")
+        .addLogoutHandler(new HeaderWriterLogoutHandler(
+                new ClearSiteDataHeaderWriter(
+                        ClearSiteDataHeaderWriter.Directive.CACHE,
+                        ClearSiteDataHeaderWriter.Directive.COOKIES,
+                        ClearSiteDataHeaderWriter.Directive.STORAGE)))
     .and()  
         .headers()
         .frameOptions()
          .sameOrigin()
  
     .and()
-      .csrf()
-      .ignoringAntMatchers("/h2-console/**")
+      .csrf();
+      
 
     
    
