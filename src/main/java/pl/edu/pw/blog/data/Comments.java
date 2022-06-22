@@ -1,10 +1,8 @@
 package pl.edu.pw.blog.data;
 
-import java.io.Serial;
+
 import java.io.Serializable;
 import java.util.*;
-
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,10 +39,6 @@ import lombok.ToString;
 public class Comments implements Serializable{
 
 
-    // Definicja zmiennych globalnych
-
-
-    @Serial
     private static final long serialVersionUID = 1L;
 
 
@@ -55,21 +49,13 @@ public class Comments implements Serializable{
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat (pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(nullable=false,updatable=false) // updatable=false -> gwarantuje niezmiennosc Daty i zmiennych w Hibernate
+    @Column(nullable=false,updatable=false)
     private Date publishedAt;
 
     @NonNull
-    @Column(length=65000,nullable=false)
+    @Column(length=10000,nullable=false)
     private String body;
 
-    // Laczenie tabeli Comments z Tabelą Users
-
-    /**
-    *adnotacja @JoinColumn(name="author_id", nullable=false) w tym przypadku połączy t
-    *
-    */
-
-    //
 
     @ToString.Exclude
     @NonNull
@@ -85,42 +71,11 @@ public class Comments implements Serializable{
     private Article article;
 
 
-//
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @DateTimeFormat (pattern="yyyy-MM-dd HH:mm:ss")
-//    private Date modifiedAt;
 
     @PrePersist
     void publishedAt() {
-        this.publishedAt = new Date();  // budowana przez Hibernate data obecna utowrzenia komejtarza iona jest niezmienna
-//        this.modifiedAt = publishedAt;
+        this.publishedAt = new Date(); 
     }
-//    @PreUpdate
-//    void modifiedAt() {
-//        this.modifiedAt = new Date();
-//    }
-
-//
-//    public int commentsCount(){
-//        return getComments().size();
-//    }
-
-//    public void addComment(Comments comments){
-//        getBody().add(comments);
-//    }
-//
-//    public void removeComment(Comments comments){
-//        getComments().remove(comments);
-//    }
-//
-//    public boolean howManyComments() {
-//        return getComments().size() > 0;
-//    }
-//
-//    public boolean isCommentedByUser(Comments comment) {
-//
-//        return comments.contains(comment);
-//    }
 
 
 
