@@ -26,7 +26,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
-
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
@@ -100,7 +101,8 @@ public class Article implements Serializable{
 	}
 	
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "article",fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "article",fetch=FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Comments> comments = new ArrayList<>();
 	
 	

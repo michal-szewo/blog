@@ -38,4 +38,7 @@ public interface ArticleRepository extends PagingAndSortingRepository<Article, L
 	  @Query("select max(a.modifiedAt) from Article a")
 	  Optional<Date> findMaxModifiedDate();
 	  
+	  
+	 
+	  
 	}
