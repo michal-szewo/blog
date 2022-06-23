@@ -4,32 +4,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import java.util.Map;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-
-
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import pl.edu.pw.blog.data.User;
-import pl.edu.pw.blog.data.UserRepository;
 import pl.edu.pw.blog.security.RegistrationController;
 import pl.edu.pw.blog.security.UserService;
 
@@ -50,19 +40,13 @@ class BlogApplicationTests {
 	Long articlesNumber = 2L;
 	Long authorsNumber = 2L;
 	
-	/*
-	 * Map<String,Object> mockModelAttributes = Map.ofEntries(
-	 * entry("likesNumber",likesNumber), entry("commentsNumber",commentsNumber),
-	 * entry("articlesNumber",articlesNumber), entry("authorsNumber",authorsNumber)
-	 * );
-	 */
+	
 
 	@Autowired
 	private MockMvc mockMvc;
 	
 	
-	@Autowired
-	private UserRepository userRepo;
+
 	
 
 	@Autowired
