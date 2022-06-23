@@ -1,6 +1,7 @@
 package pl.edu.pw.blog.data;
 
 
+
 import org.springframework.data.repository.CrudRepository;
 
 
@@ -16,5 +17,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface CommentRepository extends CrudRepository<Comments, Long> {
 
-
+	
 }

@@ -57,7 +57,7 @@
          
     </div>
     <div id="add_post "class="row fixed-bottom bg-light border-top border-primary">
-    <button class="btn btn-primary btn-lg ds-flex align-content-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false"><i class="material-icons">add</i>&nbsp;<span>Utwórz nowy artykuł</span></button>
+    <button id="add_button" class="btn btn-primary btn-lg ds-flex align-content-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false"><i class="material-icons">add</i>&nbsp;<span>Utwórz nowy artykuł</span></button>
       
         <div class="collapse" id="collapseForm">
         
@@ -92,6 +92,12 @@
 			  		$(this).val(getSavedValue($(this).attr('id')));
 			  	});
 				
+				$("#collapseForm").on("hide.bs.collapse", function(){
+				    $("#add_button").html('<i class="material-icons">add</i>&nbsp;<span>Utwórz nowy artykuł</span>');
+				  });
+				  $("#collapseForm").on("show.bs.collapse", function(){
+				    $("#add_button").html('<i class="material-icons">remove</i>&nbsp;<span>Zwiń panel</span>');
+				  });
 			
 			   var countLikes = /*[[${likesNumber}]]*/ 0;
 			   var countComments = /*[[${commentsNumber}]]*/ 0;
@@ -115,11 +121,21 @@
 		                    	countComments < data.commentsNumber
 		                    ) {
 		                        
+		                    	
+		                    	if (typeof $(".comments_textareas").filter(":focus").attr("id") !== undefined){
+		                    		var focused = $(".comments_textareas").filter(":focus").attr("id");
+		                    	}
+		                    	
 		                        $.get("/refreshArticles").done(function (fragment) { 
 		                           	$("#articles_list").html(fragment);
 		                           	$('.comments_textareas').each(function(i,obj){
 			        			  		$(this).val(getSavedValue($(this).attr('id')));
 			        			  	});
+		                           	if (typeof focused !== undefined){
+		                           		$("#" + focused).focus();
+		                           	};
+		                           	
+		                           	
 		                           	if (authorsNumber > data.authorsList.length || authorsNumber < data.authorsList.length){
 		                           		var filterVal = $("#filter option:selected").val();
 		                     

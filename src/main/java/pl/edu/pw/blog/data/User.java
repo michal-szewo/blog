@@ -19,6 +19,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.
                                           SimpleGrantedAuthority;
@@ -69,7 +71,8 @@ public class User implements Comparable<User>, UserDetails{
 	@ManyToMany(mappedBy = "likers",fetch=FetchType.EAGER)
 	private Set<Article> likedArticles = new HashSet<>();
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	@OneToMany(mappedBy = "user", fetch=FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Comments> comments = new ArrayList<>();
 	
 	

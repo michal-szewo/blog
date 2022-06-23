@@ -7,11 +7,9 @@ import java.util.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -73,15 +71,13 @@ public class Comments implements Serializable{
 
     @ToString.Exclude
     @NonNull
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="author_id", nullable=false)
+    @ManyToOne
     private User user;
 
 
     @ToString.Exclude
     @NonNull
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="article_id", nullable=false)
+    @ManyToOne
     private Article article;
 
 

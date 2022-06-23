@@ -288,11 +288,13 @@ public class ArticlesController{
 	 * 
 	 * @author Michal
 	 */
+	
 	@PostMapping(value = "/articles/delete/{id}")
 	public String deleteArticle(@PathVariable Long id, Model model,RedirectAttributes redirectAttributes) {
 		
 		
 		if (isAuthor((User) model.getAttribute("user"),id)){
+			
 			articleRepo.deleteById(id);
 			redirectAttributes.addFlashAttribute("message","Usunięto artykuł o id: " + id);
 		} else {
@@ -364,8 +366,6 @@ public class ArticlesController{
 			
 			model.addAttribute("errors",errors.getAllErrors());
 			
-			
-			//return "redirect:/articles/edit/"+modifiedArticle.getId();
 			return "edit";
 		  }
 
