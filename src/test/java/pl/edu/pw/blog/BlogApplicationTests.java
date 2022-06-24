@@ -1,7 +1,6 @@
 package pl.edu.pw.blog;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -12,7 +11,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.Map;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -51,12 +49,7 @@ class BlogApplicationTests {
 	Long articlesNumber = 2L;
 	Long authorsNumber = 2L;
 	
-	Map<String,Object> mockModelAttributes = Map.ofEntries(
-			entry("likesNumber",likesNumber),
-			entry("commentsNumber",commentsNumber),
-			entry("articlesNumber",articlesNumber),
-			entry("authorsNumber",authorsNumber)
-			);
+	
 	
 
 	@Autowired
@@ -224,7 +217,7 @@ class BlogApplicationTests {
 	
 	
 	MvcResult result = this.mockMvc.perform(get("/").sessionAttr("user",
-	userRepo.findByUsername("test")).flashAttrs(mockModelAttributes))
+	userRepo.findByUsername("test")))
 	.andExpect(status().isOk())
 	.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
 	.andReturn();
