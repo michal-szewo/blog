@@ -1,25 +1,34 @@
 package pl.edu.pw.blog;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.Map;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import pl.edu.pw.blog.data.User;
+import pl.edu.pw.blog.data.UserRepository;
 import pl.edu.pw.blog.security.RegistrationController;
 import pl.edu.pw.blog.security.UserService;
 
@@ -45,9 +54,12 @@ class BlogApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	
-
-	
+	Map<String,Object> mockModelAttributes = Map.ofEntries(
+			entry("likesNumber",likesNumber),
+			entry("commentsNumber",commentsNumber),
+			entry("articlesNumber",articlesNumber),
+			entry("authorsNumber",authorsNumber)
+			);
 
 	@Autowired
 	private UserService userService;
@@ -55,6 +67,9 @@ class BlogApplicationTests {
 	@Autowired
 	private RegistrationController rController;
 
+	@Autowired
+	private UserRepository userRepo;
+	
 	// Test prawidłowego załadowania klasy RegistrationController
 	@Test
 	public void contextLoads() throws Exception {
@@ -169,22 +184,19 @@ class BlogApplicationTests {
 	}
 	
 	// Test udanego logowania po podaniu prawidłowych poświadczeń (poświadczenia załadowane uprzednio za pomocą pliku test-user-data.sql)
-	// Spodziewany rezultat: przekierowanie do strony głównej
-	/*
-	 * @Test
-	 * 
-	 * @Sql(scripts = "/test-user-data.sql") public void testSuccessfulLogin()
-	 * throws Exception {
-	 * 
-	 * RequestBuilder requestBuilder =
-	 * formLogin().user("test").password("test1234");
-	 * this.mockMvc.perform(requestBuilder).andExpect(redirectedUrl("/")).andExpect(
-	 * status().isFound());
-	 * 
-	 * 
-	 * }
-	 */
-
+	// Spodziewany rezultat: przekierowanie do strony głównej	
+	@Test
+	@Sql(scripts = "/test-user-data.sql") public void testSuccessfulLogin()
+	throws Exception {
+	
+	RequestBuilder requestBuilder =
+	formLogin().user("test").password("test1234");
+	this.mockMvc.perform(requestBuilder).andExpect(redirectedUrl("/")).andExpect(
+	status().isFound());
+	
+	
+	}
+	
 	
 	// Test nieudanego logowania - spodziewany rezultat: przekierowanie do strony /login?error=true
 	@Test
@@ -197,38 +209,38 @@ class BlogApplicationTests {
 	
 	
 	// Test poprawnego załadowania strony głównej, gdy użytkownik jest zalogowany
-	/*
-	 * @Test
-	 * 
-	 * @WithMockUser(username = "test", roles = "USER") public void
-	 * whenAuthorizedUser_thenReturnArticlesTemplate() throws Exception {
-	 * 
-	 * 
-	 * 
-	 * MvcResult result = this.mockMvc.perform(get("/").sessionAttr("user",
-	 * userRepo.findByUsername("test")).flashAttrs(mockModelAttributes))
-	 * .andExpect(status().isOk())
-	 * .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-	 * .andReturn();
-	 * 
-	 * String content = result.getResponse().getContentAsString();
-	 * assertNotNull(content); assertTrue(content.contains("Zalogowany:")); }
-	 */
+	
+	@Test
+	@WithMockUser(username = "test", roles = "USER") public void
+	whenAuthorizedUser_thenReturnArticlesTemplate() throws Exception {
+	
+	
+	
+	MvcResult result = this.mockMvc.perform(get("/").sessionAttr("user",
+	userRepo.findByUsername("test")).flashAttrs(mockModelAttributes))
+	.andExpect(status().isOk())
+	.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+	.andReturn();
+	
+	String content = result.getResponse().getContentAsString();
+	assertNotNull(content); assertTrue(content.contains("Zalogowany:")); }
+	
 	
 	
 	// Sprawdzenie, czy użytkownik może usunąć cudzy artykuł
 	// Spodziewany rezultat: komunikat błędu
-	/*
-	 * @Test public void whenNotAuthor_thenCannotDeleteArticle() throws Exception {
-	 * 
-	 * User testUser = (User) userService.loadUserByUsername("m");
-	 * 
-	 * this.mockMvc.perform(post("/articles/delete/1").with(user(testUser)).with(
-	 * csrf())) .andExpect(flash().attributeExists("errorMessage"));
-	 * 
-	 * 
-	 * }
-	 */
+	
+	@Test
+	public void whenNotAuthor_thenCannotDeleteArticle() throws Exception {
+	
+	User testUser = (User) userService.loadUserByUsername("m");
+	
+	this.mockMvc.perform(post("/articles/delete/1").with(user(testUser)).with(
+	csrf())) .andExpect(flash().attributeExists("errorMessage"));
+	
+	
+	}
+	
 		
 	
 

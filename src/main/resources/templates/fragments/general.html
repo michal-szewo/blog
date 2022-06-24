@@ -98,17 +98,17 @@
 								<div class="border-bottom bg-white p-2 me-2 my-2" th:text="${comment.body}">Treść</div>
 							</div>
 						</div>
-						<form class="col-lg-6 p-3" onsubmit="event.preventDefault();addComment($(this));">
+						<form class="col-lg-8 p-3" onsubmit="event.preventDefault();addComment($(this));">
 
-							<div class="mb-3">
-								<label class="form-label">Komentarz:</label>
-								<textarea th:id="'commText'+${article.id}" th:name="body" class="form-control comments_textareas" style="resize:none" rows="1" required onkeyup='saveValue($(this));'></textarea>
+							<div class="mb-3 d-flex align-items-center flex-wrap">
+								<input type="hidden" th:name="article" th:value="${article.id}">
+								<textarea th:id="'commText'+${article.id}" th:name="body" class="m-2 form-control comments_textareas w-50" style="resize:none;height:40px;" rows="1" required onkeyup='saveValue($(this));'></textarea>
+								<button type="submit" class="btn btn-md btn-primary d-flex m-2 align-items-center"><i class="material-icons">add</i>&nbsp;Dodaj komentarz</button>
+							
 							</div>
-							<input type="hidden" th:name="article" th:value="${article.id}">
-							<!-- <input type="hidden" th:name="user" th:value="${user.id}"> -->
-							<div>
-								<button type="submit" class="btn btn-md btn-primary d-flex mt-3 align-items-center"><i class="material-icons">add</i>&nbsp;Dodaj komentarz</button>
-							</div>
+							
+							
+								
 
 						</form>
 
