@@ -288,7 +288,6 @@ public class ArticlesController{
 	 * 
 	 * @author Michal
 	 */
-	
 	@PostMapping(value = "/articles/delete/{id}")
 	public String deleteArticle(@PathVariable Long id, Model model,RedirectAttributes redirectAttributes) {
 		
