@@ -17,10 +17,12 @@ import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -29,11 +31,13 @@ import lombok.ToString;
  * @author Viaceslav
  *
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name="COMMENTS")
 @RequiredArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Comments implements Serializable{
 
 
@@ -42,6 +46,7 @@ public class Comments implements Serializable{
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @EqualsAndHashCode.Include
     private Long id;
 
 
@@ -71,7 +76,9 @@ public class Comments implements Serializable{
     @PrePersist
     void publishedAt() {
         this.publishedAt = new Date(); 
+
     }
+
 
 
 

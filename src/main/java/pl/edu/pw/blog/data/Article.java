@@ -30,10 +30,12 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -42,11 +44,13 @@ import lombok.ToString;
  * @author Michal
  *
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name="ARTICLES")
 @RequiredArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Article implements Serializable{
 	
 	
@@ -55,6 +59,7 @@ public class Article implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Long id;
 	
 	@NonNull
@@ -100,7 +105,7 @@ public class Article implements Serializable{
 		this.modifiedAt = new Date();
 	}
 	
-	
+	@ToString.Exclude
 	@OneToMany(mappedBy = "article",fetch=FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Comments> comments = new ArrayList<>();

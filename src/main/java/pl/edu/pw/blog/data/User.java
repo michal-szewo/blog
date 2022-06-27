@@ -26,10 +26,12 @@ import org.springframework.security.core.authority.
                                           SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -40,8 +42,10 @@ import lombok.ToString;
  */
 @Entity
 @Table(name="USERS")
-@Data
+@Getter
+@Setter
 @RequiredArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access=AccessLevel.PROTECTED,force=true)
 public class User implements Comparable<User>, UserDetails{
 	
@@ -49,6 +53,7 @@ public class User implements Comparable<User>, UserDetails{
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Long id;
 	
 	@NonNull
@@ -71,29 +76,24 @@ public class User implements Comparable<User>, UserDetails{
 	@ManyToMany(mappedBy = "likers",fetch=FetchType.EAGER)
 	private Set<Article> likedArticles = new HashSet<>();
 	
+	@ToString.Exclude
 	@OneToMany(mappedBy = "user", fetch=FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Comments> comments = new ArrayList<>();
 
 	
 	
-	@Override
-	public boolean equals(Object o) {
-		if (this ==o) return true;
-		if (o == null || getClass() !=o.getClass()) return false;
-		User other = (User) o;
-		if (!id.equals(other.getId())) return false;
-		if (!username.equals(other.getUsername())) return false;
-		
-		return true;
-	}
-	
-	@Override
-	public int hashCode() {
-		int result = id.hashCode();
-		result = 31*result + username.hashCode();	
-		return result;
-	}
+	/*
+	 * @Override public boolean equals(Object o) { if (this ==o) return true; if (o
+	 * == null || getClass() !=o.getClass()) return false; User other = (User) o; if
+	 * (!id.equals(other.getId())) return false; if
+	 * (!username.equals(other.getUsername())) return false;
+	 * 
+	 * return true; }
+	 * 
+	 * @Override public int hashCode() { int result = id.hashCode(); result =
+	 * 31*result + username.hashCode(); return result; }
+	 */
 	
 	@Override
 	public int compareTo(User o) {
