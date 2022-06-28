@@ -20,9 +20,12 @@ import javax.persistence.TemporalType;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -31,11 +34,13 @@ import lombok.ToString;
  * @author Viaceslav
  *
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name="COMMENTS")
 @RequiredArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Comments implements Serializable{
 
 
@@ -48,6 +53,7 @@ public class Comments implements Serializable{
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @EqualsAndHashCode.Include
     private Long id;
 
 
@@ -60,14 +66,6 @@ public class Comments implements Serializable{
     @Column(length=65000,nullable=false)
     private String body;
 
-    // Laczenie tabeli Comments z Tabela Users
-
-    /**
-    *adnotacja @JoinColumn(name="author_id", nullable=false) w tym przypadku połączy t
-    *
-    */
-
-    //
 
     @ToString.Exclude
     @NonNull
@@ -81,42 +79,13 @@ public class Comments implements Serializable{
     private Article article;
 
 
-//
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @DateTimeFormat (pattern="yyyy-MM-dd HH:mm:ss")
-//    private Date modifiedAt;
 
     @PrePersist
     void publishedAt() {
         this.publishedAt = new Date();  // budowana przez Hibernate data obecna utowrzenia komejtarza iona jest niezmienna
-//        this.modifiedAt = publishedAt;
+
     }
-//    @PreUpdate
-//    void modifiedAt() {
-//        this.modifiedAt = new Date();
-//    }
 
-//
-//    public int commentsCount(){
-//        return getComments().size();
-//    }
-
-//    public void addComment(Comments comments){
-//        getBody().add(comments);
-//    }
-//
-//    public void removeComment(Comments comments){
-//        getComments().remove(comments);
-//    }
-//
-//    public boolean howManyComments() {
-//        return getComments().size() > 0;
-//    }
-//
-//    public boolean isCommentedByUser(Comments comment) {
-//
-//        return comments.contains(comment);
-//    }
 
 
 
