@@ -416,7 +416,8 @@ public class ArticlesController{
 			
 		} catch (Exception e) {
 			log.error("Brak artykułu o id: " + id);
-			return "fragments/newlcard :: lcard";
+			//return "fragments/newlcard :: lcard";
+			return "redirect:/";
 		}
 		User user = (User) model.getAttribute("user");
 		if(!isLiked) {
