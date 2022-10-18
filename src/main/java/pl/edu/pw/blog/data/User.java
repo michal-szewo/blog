@@ -87,7 +87,7 @@ public class User implements Comparable<User>, UserDetails{
 	 * == null || getClass() !=o.getClass()) return false; User other = (User) o; if
 	 * (!id.equals(other.getId())) return false; if
 	 * (!username.equals(other.getUsername())) return false;
-	 * 
+	 * test intellij
 	 * return true; }
 	 * 
 	 * @Override public int hashCode() { int result = id.hashCode(); result =
